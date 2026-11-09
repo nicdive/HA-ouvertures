@@ -8,8 +8,10 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
+    ATTR_AREA,
     ATTR_CLOSE_ENTITY,
     ATTR_CONTACT_ENTITY,
+    ATTR_DISPLAY_NAME,
     ATTR_IMAGE,
     ATTR_IMPULSE_ENTITY,
     ATTR_IS_ALERT,
@@ -66,6 +68,8 @@ class OuvertureStateSensor(OuvertureEntity, SensorEntity):
             ATTR_OPEN_ENTITY: r["open_entity"],
             ATTR_CLOSE_ENTITY: r["close_entity"],
             ATTR_IMPULSE_ENTITY: r["impulse_entity"],
+            ATTR_AREA: r.get("area"),
+            ATTR_DISPLAY_NAME: r.get("display_name") or self.entry_data[CONF_NAME],
             "friendly_state": r["label"],
             "name": self.entry_data[CONF_NAME],
             "type_label": OPENING_TYPES[self.entry_data[CONF_OPENING_TYPE]]["label"],

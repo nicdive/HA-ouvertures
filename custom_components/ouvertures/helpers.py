@@ -143,9 +143,60 @@ def is_alert(opening_type: str, state: str) -> bool:
     )
 
 
+def resolve_area_name(
+    hass: Any,
+    *,
+    device_id: str | None = None,
+    entity_ids: list[str] | None = None,
+) -> str | None:
+    """Retrouve le nom de pièce (area) HA pour un device / des entités liées."""
+    try:
+        from homeassistant.helpers import (
+            area_registry as ar,
+            device_registry as dr,
+            entity_registry as er,
+        )
+    except Exception:  # noqa: BLE001
+        return None
+
+    area_reg = ar.async_get(hass)
+    dev_reg = dr.async_get(hass)
+    ent_reg = er.async_get(hass)
+
+    area_id: str | None = None
+
+    if device_id:
+        device = dev_reg.async_get(device_id)
+        if device and device.area_id:
+            area_id = device.area_id
+
+    if area_id is None and entity_ids:
+        for eid in entity_ids:
+            if not eid:
+                continue
+            entry = ent_reg.async_get(eid)
+            if not entry:
+                continue
+            if entry.area_id:
+                area_id = entry.area_id
+                break
+            if entry.device_id:
+                device = dev_reg.async_get(entry.device_id)
+                if device and device.area_id:
+                    area_id = device.area_id
+                    break
+
+    if not area_id:
+        return None
+    area = area_reg.async_get_area(area_id)
+    return area.name if area else None
+
+
 def resolve_opening(
     hass: Any,
     data: dict[str, Any],
+    *,
+    device_id: str | None = None,
 ) -> dict[str, Any]:
     """Calcule l'état courant d'une ouverture à partir de sa config."""
     from .const import (
@@ -153,6 +204,7 @@ def resolve_opening(
         CONF_CONTACT_ENTITY,
         CONF_IMPULSE_ENTITY,
         CONF_INVERTED,
+        CONF_NAME,
         CONF_OPEN_ENTITY,
         CONF_OPENING_TYPE,
         CONF_SHUTTER_ENTITY,
@@ -163,6 +215,7 @@ def resolve_opening(
     inverted = bool(data.get(CONF_INVERTED, False))
     contact_id = data.get(CONF_CONTACT_ENTITY)
     shutter_id = data.get(CONF_SHUTTER_ENTITY)
+    name = data.get(CONF_NAME) or ""
 
     contact_state = hass.states.get(contact_id) if contact_id else None
     shutter_state = hass.states.get(shutter_id) if shutter_id else None
@@ -174,6 +227,17 @@ def resolve_opening(
 
     state = combined_state(opening_type, contact_open, shutter_open)
     image = image_for_state(opening_type, state)
+    area = resolve_area_name(
+        hass,
+        device_id=device_id,
+        entity_ids=[
+            contact_id,
+            shutter_id,
+            data.get(CONF_OPEN_ENTITY),
+            data.get(CONF_CLOSE_ENTITY),
+            data.get(CONF_IMPULSE_ENTITY),
+        ],
+    )
 
     return {
         "state": state,
@@ -189,4 +253,7 @@ def resolve_opening(
         "close_entity": data.get(CONF_CLOSE_ENTITY),
         "impulse_entity": data.get(CONF_IMPULSE_ENTITY),
         "opening_type": opening_type,
+        "name": name,
+        "area": area,
+        "display_name": f"{area} — {name}" if area and name else (area or name),
     }

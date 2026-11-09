@@ -79,62 +79,101 @@ def _sensor_entity_id(hass: HomeAssistant, entry: ConfigEntry) -> str | None:
     return registry.async_get_entity_id("sensor", DOMAIN, f"{entry.entry_id}_etat")
 
 
-def _collect_openings(hass: HomeAssistant) -> dict[str, list[dict[str, str]]]:
-    """Regroupe les capteurs État par type d'ouverture."""
-    grouped: dict[str, list[dict[str, str]]] = {t: [] for t in _TYPE_ORDER}
+def _collect_openings(hass: HomeAssistant) -> list[dict[str, str]]:
+    """Liste les ouvertures avec nom / pièce / type."""
+    items: list[dict[str, str]] = []
 
     for entry in hass.config_entries.async_entries(DOMAIN):
         if entry.entry_id not in hass.data.get(DOMAIN, {}):
             continue
         opening_type = entry.data.get(CONF_OPENING_TYPE)
-        if opening_type not in grouped:
+        if opening_type not in OPENING_TYPES:
             continue
         entity_id = _sensor_entity_id(hass, entry)
         if not entity_id:
             continue
-        grouped[opening_type].append(
+        state = hass.states.get(entity_id)
+        area = ""
+        if state:
+            area = state.attributes.get("area") or ""
+        items.append(
             {
                 "entity_id": entity_id,
                 "name": entry.data.get(CONF_NAME, entity_id),
+                "opening_type": opening_type,
+                "area": area,
             }
         )
 
-    for items in grouped.values():
-        items.sort(key=lambda i: i["name"].lower())
-    return grouped
+    items.sort(
+        key=lambda i: (
+            (i["area"] or "zzz").lower(),
+            _TYPE_ORDER.index(i["opening_type"])
+            if i["opening_type"] in _TYPE_ORDER
+            else 99,
+            i["name"].lower(),
+        )
+    )
+    return items
 
 
-def _build_config(grouped: dict[str, list[dict[str, str]]]) -> dict[str, Any]:
-    """Construit la config Lovelace (sections)."""
+def _build_config(items: list[dict[str, str]]) -> dict[str, Any]:
+    """Construit la config Lovelace — sections par pièce si possible."""
     sections: list[dict[str, Any]] = []
-    all_entities: list[str] = []
+    all_entities = [i["entity_id"] for i in items]
+    has_areas = any(i.get("area") for i in items)
 
-    for opening_type in _TYPE_ORDER:
-        items = grouped.get(opening_type) or []
-        if not items:
-            continue
-        entities = [i["entity_id"] for i in items]
-        all_entities.extend(entities)
-        label = OPENING_TYPES[opening_type]["label"]
-        icon = OPENING_TYPES[opening_type]["icon"]
-        sections.append(
-            {
-                "type": "grid",
-                "cards": [
-                    {
-                        "type": "heading",
-                        "heading": label,
-                        "heading_style": "title",
-                        "icon": icon,
-                    },
-                    {
-                        "type": "custom:ouvertures-card",
-                        "title": label,
-                        "entities": entities,
-                    },
-                ],
-            }
-        )
+    if has_areas:
+        # Une section par pièce (+ « Autres » sans area)
+        by_area: dict[str, list[dict[str, str]]] = {}
+        for item in items:
+            key = item.get("area") or "Autres"
+            by_area.setdefault(key, []).append(item)
+        for area_name, area_items in by_area.items():
+            entities = [i["entity_id"] for i in area_items]
+            sections.append(
+                {
+                    "type": "grid",
+                    "cards": [
+                        {
+                            "type": "heading",
+                            "heading": area_name,
+                            "heading_style": "title",
+                            "icon": "mdi:floor-plan",
+                        },
+                        {
+                            "type": "custom:ouvertures-card",
+                            "entities": entities,
+                        },
+                    ],
+                }
+            )
+    else:
+        # Fallback : sections par type (comme avant)
+        for opening_type in _TYPE_ORDER:
+            type_items = [i for i in items if i["opening_type"] == opening_type]
+            if not type_items:
+                continue
+            entities = [i["entity_id"] for i in type_items]
+            label = OPENING_TYPES[opening_type]["label"]
+            icon = OPENING_TYPES[opening_type]["icon"]
+            sections.append(
+                {
+                    "type": "grid",
+                    "cards": [
+                        {
+                            "type": "heading",
+                            "heading": label,
+                            "heading_style": "title",
+                            "icon": icon,
+                        },
+                        {
+                            "type": "custom:ouvertures-card",
+                            "entities": entities,
+                        },
+                    ],
+                }
+            )
 
     if not sections:
         sections = [
@@ -146,7 +185,9 @@ def _build_config(grouped: dict[str, list[dict[str, str]]]) -> dict[str, Any]:
                         "content": (
                             "## Aucune ouverture\n\n"
                             "Ajoutez une baie, porte, portail, garage ou piscine via\n"
-                            "**Paramètres → Appareils et services → Gestion des ouvertures**."
+                            "**Paramètres → Appareils et services → Gestion des ouvertures**.\n\n"
+                            "Astuce : assignez une **pièce** (area) au capteur d'ouverture "
+                            "pour l'afficher clairement sur le tableau de bord."
                         ),
                     }
                 ],
@@ -165,7 +206,6 @@ def _build_config(grouped: dict[str, list[dict[str, str]]]) -> dict[str, Any]:
         overview_cards.append(
             {
                 "type": "custom:ouvertures-card",
-                "title": "Toutes les ouvertures",
                 "entities": all_entities,
             }
         )
@@ -271,8 +311,8 @@ async def _async_update_dashboard_locked(hass: HomeAssistant) -> None:
         schedule_dashboard_update(hass, delay=5.0)
         return
 
-    grouped = _collect_openings(hass)
-    has_any = any(grouped[t] for t in _TYPE_ORDER)
+    items = _collect_openings(hass)
+    has_any = bool(items)
     lovelace_data = hass.data[LOVELACE_DATA]
 
     existing = None
@@ -315,7 +355,7 @@ async def _async_update_dashboard_locked(hass: HomeAssistant) -> None:
             if existing is None and DASHBOARD_URL_PATH in lovelace_data.dashboards:
                 # Fallback : store déjà présent
                 store = lovelace_data.dashboards[DASHBOARD_URL_PATH]
-                await store.async_save(_build_config(grouped))
+                await store.async_save(_build_config(items))
                 return
             if existing is None:
                 return
@@ -334,8 +374,8 @@ async def _async_update_dashboard_locked(hass: HomeAssistant) -> None:
         )
         return
 
-    await store.async_save(_build_config(grouped))
+    await store.async_save(_build_config(items))
     _LOGGER.debug(
         "Tableau de bord Ouvertures mis à jour (%s ouverture(s))",
-        sum(len(v) for v in grouped.values()),
+        len(items),
     )

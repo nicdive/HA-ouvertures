@@ -6,7 +6,7 @@
  * (évite le clignotement des images à chaque push hass).
  */
 (() => {
-  const CARD_VERSION = "1.1.1";
+  const CARD_VERSION = "1.1.2";
   const CARD_TYPE = "ouvertures-card";
 
   const OPEN_TYPES_WITH_CONTROLS = new Set([
@@ -55,11 +55,24 @@
     .ov-tile.is-ok {
       border-color: rgba(22, 163, 74, 0.35);
     }
-    .ov-name {
-      font-weight: 650;
-      font-size: 0.95rem;
-      color: #111827;
+    .ov-area {
+      font-weight: 750;
+      font-size: 1.05rem;
+      color: #0f172a;
       text-align: center;
+      line-height: 1.2;
+    }
+    .ov-name {
+      font-weight: 550;
+      font-size: 0.82rem;
+      color: #64748b;
+      text-align: center;
+      line-height: 1.2;
+    }
+    .ov-name.ov-name-only {
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: #111827;
     }
     .ov-visual {
       border: 0;
@@ -281,9 +294,17 @@
     _attrs(entityId) {
       const st = this._hass?.states?.[entityId];
       if (!st) return null;
+      const rawName =
+        st.attributes.name ||
+        st.attributes.friendly_name ||
+        entityId;
+      // Evite le suffixe " État" du friendly_name HA
+      const name = String(rawName).replace(/\s+État$/i, "").trim();
       return {
         state: st.state,
-        name: st.attributes.name || st.attributes.friendly_name || entityId,
+        name,
+        area: st.attributes.area || "",
+        displayName: st.attributes.display_name || name,
         label: st.attributes.label || st.attributes.friendly_state || st.state,
         image: st.attributes.image || "",
         isAlert: Boolean(st.attributes.is_alert),
@@ -307,6 +328,9 @@
             st.state,
             a.image || "",
             a.label || "",
+            a.area || "",
+            a.display_name || "",
+            a.name || "",
             a.is_alert ? 1 : 0,
             a.open_entity || "",
             a.close_entity || "",
@@ -443,7 +467,7 @@
           tile = document.createElement("div");
           tile.className = "ov-tile ov-missing";
           tile.dataset.entity = entityId;
-          tile.innerHTML = `<div class="ov-name"></div><div class="ov-label">Entité introuvable</div>`;
+          tile.innerHTML = `<div class="ov-area"></div><div class="ov-name"></div><div class="ov-label">Entité introuvable</div>`;
           container.appendChild(tile);
         }
         tile.querySelector(".ov-name").textContent = entityId;
@@ -456,6 +480,7 @@
         tile = document.createElement("div");
         tile.dataset.entity = entityId;
         tile.innerHTML = `
+          <div class="ov-area" hidden></div>
           <div class="ov-name"></div>
           <button class="ov-visual" type="button" title="Détails">
             <img alt="" decoding="async" />
@@ -467,7 +492,19 @@
       }
 
       tile.className = `ov-tile ${alertClass}`;
-      tile.querySelector(".ov-name").textContent = info.name;
+      const areaEl = tile.querySelector(".ov-area");
+      const nameEl = tile.querySelector(".ov-name");
+      if (info.area) {
+        areaEl.hidden = false;
+        areaEl.textContent = info.area;
+        nameEl.textContent = info.name;
+        nameEl.classList.remove("ov-name-only");
+      } else {
+        areaEl.hidden = true;
+        areaEl.textContent = "";
+        nameEl.textContent = info.name;
+        nameEl.classList.add("ov-name-only");
+      }
       tile.querySelector(".ov-label").textContent = info.label;
 
       const visual = tile.querySelector(".ov-visual");

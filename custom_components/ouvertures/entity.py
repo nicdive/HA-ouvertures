@@ -35,21 +35,49 @@ class OuvertureEntity(Entity):
         self.hass = hass
         self._entry = entry
         self._data = {**entry.data, **entry.options}
-        self._resolved = resolve_opening(hass, self._data)
         self._last_published: tuple | None = None
         self._debounce_unsub = None
         name = self._data[CONF_NAME]
         opening_type = self._data[CONF_OPENING_TYPE]
         meta = OPENING_TYPES[opening_type]
 
+        suggested = None
+        try:
+            from .helpers import resolve_area_name
+
+            suggested = resolve_area_name(
+                hass,
+                entity_ids=[
+                    self._data.get(CONF_CONTACT_ENTITY),
+                    self._data.get(CONF_SHUTTER_ENTITY),
+                ],
+            )
+        except Exception:  # noqa: BLE001
+            suggested = None
+
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
             name=name,
             manufacturer="Ouvertures",
             model=meta["label"],
-            suggested_area=None,
+            suggested_area=suggested,
         )
         self._attr_icon = meta["icon"]
+        self._resolved = resolve_opening(
+            hass, self._data, device_id=self._device_id()
+        )
+
+    def _device_id(self) -> str | None:
+        """ID device registry de cette ouverture (si déjà enregistré)."""
+        try:
+            from homeassistant.helpers import device_registry as dr
+
+            device = dr.async_get(self.hass).async_get_device(
+                identifiers={(DOMAIN, self._entry.entry_id)}
+            )
+            return device.id if device else None
+        except Exception:  # noqa: BLE001
+            return None
 
     @property
     def entry_data(self) -> dict:
@@ -57,7 +85,9 @@ class OuvertureEntity(Entity):
 
     def refresh_resolved(self) -> None:
         self._data = self.entry_data
-        self._resolved = resolve_opening(self.hass, self._data)
+        self._resolved = resolve_opening(
+            self.hass, self._data, device_id=self._device_id()
+        )
 
     def _fingerprint(self) -> tuple:
         r = self._resolved
@@ -68,6 +98,8 @@ class OuvertureEntity(Entity):
             r.get("is_open"),
             r.get("is_alert"),
             r.get("shutter_open"),
+            r.get("area"),
+            r.get("display_name"),
         )
 
     def _publish_if_changed(self) -> None:

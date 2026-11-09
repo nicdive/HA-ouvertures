@@ -66,6 +66,10 @@ Option **Inverser le capteur** si votre contact est à l’envers (`on` = fermé
 
 Vous pouvez ajouter **autant d’ouvertures** que nécessaire (une entrée par baie / porte / …).
 
+Pour voir clairement la **pièce** sur la carte : assignez une area au capteur
+d’ouverture (ou à l’appareil) dans **Paramètres → Appareils → … → Pièce**
+(ex. Salon, Cuisine). Le dashboard se groupe alors par pièce.
+
 ## Tableau de bord
 
 Un tableau de bord **Ouvertures** est créé **automatiquement** dans la barre latérale (`/ha-ouvertures`) dès qu’au moins un ouvrant est configuré. Il se met à jour quand vous ajoutez ou supprimez une ouverture.
