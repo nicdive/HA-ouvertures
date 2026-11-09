@@ -3,7 +3,7 @@
  * Affiche le SVG d'état et les boutons de commande selon le type.
  */
 (() => {
-  const CARD_VERSION = "1.0.0";
+  const CARD_VERSION = "1.1.0";
   const CARD_TYPE = "ouvertures-card";
 
   const OPEN_TYPES_WITH_CONTROLS = new Set([
@@ -112,8 +112,24 @@
   }
 
   class OuverturesCard extends HTMLElement {
-    static getStubConfig() {
-      return { entity: "" };
+    static getStubConfig(hass, entities) {
+      // Préremplit avec le premier sensor d'état ouvertures si possible
+      const match =
+        entities?.find?.(
+          (e) =>
+            typeof e === "string" &&
+            e.startsWith("sensor.") &&
+            e.endsWith("_etat")
+        ) ||
+        (hass &&
+          Object.keys(hass.states || {}).find(
+            (e) =>
+              e.startsWith("sensor.") &&
+              hass.states[e]?.attributes?.opening_type
+          ));
+      return match
+        ? { entity: match, title: "Ouvertures" }
+        : { title: "Ouvertures", entities: [] };
     }
 
     static async getConfigElement() {
@@ -124,10 +140,13 @@
     }
 
     setConfig(config) {
-      if (!config || (!config.entity && !(config.entities && config.entities.length))) {
-        throw new Error("Spécifiez entity ou entities (sensor état ouvertures)");
+      // Ne pas throw si entity vide : sinon la carte n'apparaît pas
+      // dans le sélecteur Lovelace (stub config).
+      if (!config || typeof config !== "object") {
+        throw new Error("Configuration invalide");
       }
-      this._config = config;
+      this._config = { ...config };
+      if (this._hass) this._update();
     }
 
     set hass(hass) {
@@ -144,7 +163,8 @@
 
     _entities() {
       if (this._config.entities?.length) return this._config.entities;
-      return [this._config.entity];
+      if (this._config.entity) return [this._config.entity];
+      return [];
     }
 
     _attrs(entityId) {
@@ -282,7 +302,7 @@
     }
 
     _update() {
-      if (!this._config || !this._hass) return;
+      if (!this._config) return;
 
       if (!this._root) {
         this._root = document.createElement("ha-card");
@@ -302,6 +322,25 @@
       }
 
       const entities = this._entities();
+      if (!this._hass || !entities.length) {
+        const title = this._config.title
+          ? `<div class="ov-title">${this._config.title}</div>`
+          : "";
+        this._root.innerHTML = `
+          <style>
+            ha-card { padding: 16px; }
+            .ov-title { font-weight: 700; margin-bottom: 8px; }
+            .ov-hint { color: #6b7280; font-size: 0.9rem; }
+          </style>
+          ${title}
+          <div class="ov-hint">
+            Choisissez un capteur <code>État</code> de l’intégration
+            <strong>Gestion des ouvertures</strong>
+            (ex. <code>sensor.baie_salon_etat</code>).
+          </div>`;
+        return;
+      }
+
       const grid = entities.length > 1;
       const title = this._config.title
         ? `<div class="ov-title">${this._config.title}</div>`
@@ -434,16 +473,26 @@
   }
 
   window.customCards = window.customCards || [];
-  if (!window.customCards.find((c) => c.type === CARD_TYPE)) {
-    window.customCards.push({
-      type: CARD_TYPE,
-      name: "Ouvertures",
-      description:
-        "Visuel baies / portes / portail / garage / piscine avec commandes.",
-      preview: true,
-      documentationURL: "https://github.com/nicdive/HA-ouvertures",
-    });
+  const existing = window.customCards.find((c) => c.type === CARD_TYPE);
+  const cardInfo = {
+    type: CARD_TYPE,
+    name: "Ouvertures",
+    description:
+      "Baies vitrées, portes, portail, garage et piscine — visuels + commandes.",
+    preview: true,
+    documentationURL: "https://github.com/nicdive/HA-ouvertures",
+  };
+  if (existing) {
+    Object.assign(existing, cardInfo);
+  } else {
+    window.customCards.push(cardInfo);
   }
+
+  // Signale au sélecteur de cartes qu’une nouvelle carte custom est dispo
+  window.dispatchEvent(new Event("ll-rebuild"));
+  customElements.whenDefined("hui-card-element-editor").then(() => {
+    window.dispatchEvent(new Event("ll-rebuild"));
+  });
 
   console.info(
     `%c OUVERTURES-CARD %c v${CARD_VERSION} `,

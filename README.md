@@ -68,7 +68,9 @@ Vous pouvez ajouter **autant d’ouvertures** que nécessaire (une entrée par b
 
 ## Tableau de bord
 
-Exemple : [`dashboards/ouvertures.yaml`](dashboards/ouvertures.yaml).
+Un tableau de bord **Ouvertures** est créé **automatiquement** dans la barre latérale (`/ha-ouvertures`) dès qu’au moins un ouvrant est configuré. Il se met à jour quand vous ajoutez ou supprimez une ouverture.
+
+Vous pouvez aussi utiliser la carte manuellement :
 
 ```yaml
 type: custom:ouvertures-card
@@ -80,6 +82,15 @@ entities:
   - sensor.garage_etat
   - sensor.volet_piscine_etat
 ```
+
+> Les modifications manuelles de ce dashboard peuvent être écrasées lors d’un ajout/suppression d’ouvrant (dashboard géré par l’intégration).
+
+### Carte absente du sélecteur ?
+
+1. Vérifier **Paramètres → Tableaux de bord → Ressources** :  
+   `/ouvertures_static/ouvertures-card.js` (type **JavaScript module**)
+2. Recharger le frontend (Ctrl+F5) ou redémarrer HA
+3. Chercher **Ouvertures** dans « Parcourir » / custom cards
 
 ## Baie vitrée — 4 états
 

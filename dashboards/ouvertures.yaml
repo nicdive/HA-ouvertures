@@ -1,11 +1,10 @@
 # =============================================================================
-# Tableau de bord dédié — Gestion des ouvertures
+# Référence — le tableau de bord est créé AUTOMATIQUEMENT par l'intégration
 # -----------------------------------------------------------------------------
-# Installation :
-#   1. Paramètres → Tableaux de bord → Ajouter un tableau de bord
-#   2. Ou coller cette vue dans un dashboard existant (mode YAML)
-#   3. Remplacer les entity_id ci-dessous par ceux créés par l'intégration
-#      (Paramètres → Appareils → Ouvertures → capteur « État »)
+# Dès qu'un ouvrant est ajouté, Home Assistant affiche dans la barre latérale :
+#   Ouvertures  →  /ha-ouvertures
+#
+# Ce fichier reste un exemple / documentation. Vous n'avez rien à coller.
 # =============================================================================
 
 title: Ouvertures
@@ -17,49 +16,12 @@ views:
     max_columns: 3
     sections:
       - type: grid
-        title: Baies vitrées
         cards:
+          - type: heading
+            heading: Baie vitrée
+            heading_style: title
+            icon: mdi:door-sliding
           - type: custom:ouvertures-card
             title: Baies vitrées
             entities:
               - sensor.baie_salon_etat
-              - sensor.baie_cuisine_etat
-              # Ajoutez ici chaque baie créée via l'intégration
-
-      - type: grid
-        title: Portes
-        cards:
-          - type: custom:ouvertures-card
-            title: Portes
-            entities:
-              - sensor.porte_entree_etat
-              - sensor.porte_terrasse_etat
-
-      - type: grid
-        title: Portail & garage
-        cards:
-          - type: custom:ouvertures-card
-            entity: sensor.portail_etat
-          - type: custom:ouvertures-card
-            entity: sensor.garage_etat
-
-      - type: grid
-        title: Piscine
-        cards:
-          - type: custom:ouvertures-card
-            entity: sensor.volet_piscine_etat
-
-  # Vue compacte alternative (une seule carte grille)
-  - title: Vue d'ensemble
-    path: apercu
-    icon: mdi:view-grid
-    cards:
-      - type: custom:ouvertures-card
-        title: Toutes les ouvertures
-        entities:
-          - sensor.baie_salon_etat
-          - sensor.baie_cuisine_etat
-          - sensor.porte_entree_etat
-          - sensor.portail_etat
-          - sensor.garage_etat
-          - sensor.volet_piscine_etat
