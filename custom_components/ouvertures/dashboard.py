@@ -28,6 +28,7 @@ _LOGGER = logging.getLogger(__name__)
 DASHBOARD_URL_PATH = "ha-ouvertures"
 DASHBOARD_TITLE = "Ouvertures"
 DASHBOARD_ICON = "mdi:door-sliding"
+NO_AREA = "Sans pièce"
 
 _TYPE_ORDER = (TYPE_BAIE, TYPE_PORTE, TYPE_PORTAIL, TYPE_GARAGE, TYPE_PISCINE)
 
@@ -117,56 +118,44 @@ def _collect_openings(hass: HomeAssistant) -> list[dict[str, str]]:
     return items
 
 
+def _card_for_opening(item: dict[str, str]) -> dict[str, Any]:
+    """Une carte Lovelace = une ouverture."""
+    return {
+        "type": "custom:ouvertures-card",
+        "entity": item["entity_id"],
+    }
+
+
 def _build_config(items: list[dict[str, str]]) -> dict[str, Any]:
-    """Construit la config Lovelace — sections par pièce si possible."""
+    """Dashboard organisé par pièce, une carte par ouverture."""
     sections: list[dict[str, Any]] = []
     all_entities = [i["entity_id"] for i in items]
 
-    # Une seule carte : le widget range lui-même par pièce
-    if all_entities:
-        sections.append(
-            {
-                "type": "grid",
-                "cards": [
-                    {
-                        "type": "heading",
-                        "heading": "Par pièce",
-                        "heading_style": "title",
-                        "icon": "mdi:floor-plan",
-                    },
-                    {
-                        "type": "custom:ouvertures-card",
-                        "entities": all_entities,
-                    },
-                ],
-            }
+    if items:
+        by_area: dict[str, list[dict[str, str]]] = {}
+        for item in items:
+            key = item.get("area") or NO_AREA
+            by_area.setdefault(key, []).append(item)
+
+        # Pièces A→Z, « Sans pièce » à la fin
+        area_names = sorted(
+            by_area.keys(),
+            key=lambda a: (a == NO_AREA, a.lower()),
         )
 
-    # Sections secondaires par type (baies / portes / …)
-    for opening_type in _TYPE_ORDER:
-        type_items = [i for i in items if i["opening_type"] == opening_type]
-        if not type_items:
-            continue
-        entities = [i["entity_id"] for i in type_items]
-        label = OPENING_TYPES[opening_type]["label"]
-        icon = OPENING_TYPES[opening_type]["icon"]
-        sections.append(
-            {
-                "type": "grid",
-                "cards": [
-                    {
-                        "type": "heading",
-                        "heading": label,
-                        "heading_style": "title",
-                        "icon": icon,
-                    },
-                    {
-                        "type": "custom:ouvertures-card",
-                        "entities": entities,
-                    },
-                ],
-            }
-        )
+        for area_name in area_names:
+            area_items = by_area[area_name]
+            cards: list[dict[str, Any]] = [
+                {
+                    "type": "heading",
+                    "heading": area_name,
+                    "heading_style": "title",
+                    "icon": "mdi:floor-plan",
+                }
+            ]
+            for item in area_items:
+                cards.append(_card_for_opening(item))
+            sections.append({"type": "grid", "cards": cards})
 
     if not sections:
         sections = [
@@ -180,7 +169,7 @@ def _build_config(items: list[dict[str, str]]) -> dict[str, Any]:
                             "Ajoutez une baie, porte, portail, garage ou piscine via\n"
                             "**Paramètres → Appareils et services → Gestion des ouvertures**.\n\n"
                             "Astuce : assignez une **pièce** (area) au capteur d'ouverture "
-                            "pour l'afficher clairement sur le tableau de bord."
+                            "pour organiser le tableau de bord par pièce."
                         ),
                     }
                 ],
@@ -190,18 +179,14 @@ def _build_config(items: list[dict[str, str]]) -> dict[str, Any]:
     overview_cards: list[dict[str, Any]] = [
         {
             "type": "heading",
-            "heading": "Vue d'ensemble",
+            "heading": "Toutes les ouvertures",
             "heading_style": "title",
             "icon": "mdi:view-grid",
         }
     ]
-    if all_entities:
-        overview_cards.append(
-            {
-                "type": "custom:ouvertures-card",
-                "entities": all_entities,
-            }
-        )
+    if items:
+        for item in items:
+            overview_cards.append(_card_for_opening(item))
     else:
         overview_cards.append(
             {
@@ -213,7 +198,7 @@ def _build_config(items: list[dict[str, str]]) -> dict[str, Any]:
     return {
         "views": [
             {
-                "title": "Ouvertures",
+                "title": "Par pièce",
                 "path": "ouvertures",
                 "icon": DASHBOARD_ICON,
                 "type": "sections",
@@ -225,7 +210,7 @@ def _build_config(items: list[dict[str, str]]) -> dict[str, Any]:
                 "path": "apercu",
                 "icon": "mdi:view-grid",
                 "type": "sections",
-                "max_columns": 2,
+                "max_columns": 3,
                 "sections": [
                     {
                         "type": "grid",
@@ -339,24 +324,20 @@ async def _async_update_dashboard_locked(hass: HomeAssistant) -> None:
             _LOGGER.info("Tableau de bord créé : /%s", DASHBOARD_URL_PATH)
         except (HomeAssistantError, vol.Invalid) as err:
             _LOGGER.warning("Création du dashboard impossible : %s", err)
-            # Peut déjà exister en mémoire Lovelace
             existing = None
             for item in collection.async_items():
                 if item.get("url_path") == DASHBOARD_URL_PATH:
                     existing = item
                     break
             if existing is None and DASHBOARD_URL_PATH in lovelace_data.dashboards:
-                # Fallback : store déjà présent
                 store = lovelace_data.dashboards[DASHBOARD_URL_PATH]
                 await store.async_save(_build_config(items))
                 return
             if existing is None:
                 return
 
-    # Attendre que le listener Lovelace enregistre le store
     store = lovelace_data.dashboards.get(DASHBOARD_URL_PATH)
     if store is None:
-        # Le listener est synchrone sur CHANGE_ADDED ; si absent, petit retry
         await asyncio.sleep(0.2)
         store = lovelace_data.dashboards.get(DASHBOARD_URL_PATH)
 

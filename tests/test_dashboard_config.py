@@ -50,13 +50,19 @@ ha_ce.ConfigEntry = object  # type: ignore[attr-defined]
 dashboard = _load("ouvertures.dashboard", PKG / "dashboard.py")
 
 
-def test_build_config_has_par_piece_then_types():
+def test_dashboard_groups_by_room_one_card_each():
     items = [
         {
             "entity_id": "sensor.baie_salon_etat",
             "name": "Baie Est",
             "opening_type": const.TYPE_BAIE,
             "area": "Salon",
+        },
+        {
+            "entity_id": "sensor.baie_cuisine_etat",
+            "name": "Baie Cuisine",
+            "opening_type": const.TYPE_BAIE,
+            "area": "Cuisine",
         },
         {
             "entity_id": "sensor.portail_etat",
@@ -66,26 +72,28 @@ def test_build_config_has_par_piece_then_types():
         },
     ]
     cfg = dashboard._build_config(items)
-    assert len(cfg["views"]) == 2
+    view = cfg["views"][0]
+    assert view["title"] == "Par pièce"
+    sections = view["sections"]
+    assert len(sections) == 3  # Cuisine, Salon, Sans pièce
+
     headings = [
         c["heading"]
-        for s in cfg["views"][0]["sections"]
+        for s in sections
         for c in s["cards"]
         if c.get("type") == "heading"
     ]
-    assert headings[0] == "Par pièce"
-    assert "Baie vitrée" in headings
-    assert "Portail coulissant" in headings
-    # La carte "Par pièce" contient toutes les entités
-    first_card = next(
+    assert headings == ["Cuisine", "Salon", "Sans pièce"]
+
+    # Une carte par ouverture (pas une grille d'entities)
+    opening_cards = [
         c
-        for c in cfg["views"][0]["sections"][0]["cards"]
+        for s in sections
+        for c in s["cards"]
         if c.get("type") == "custom:ouvertures-card"
-    )
-    assert set(first_card["entities"]) == {
-        "sensor.baie_salon_etat",
-        "sensor.portail_etat",
-    }
+    ]
+    assert len(opening_cards) == 3
+    assert all("entity" in c and "entities" not in c for c in opening_cards)
 
 
 def test_build_config_empty():
@@ -94,6 +102,6 @@ def test_build_config_empty():
 
 
 if __name__ == "__main__":
-    test_build_config_has_par_piece_then_types()
+    test_dashboard_groups_by_room_one_card_each()
     test_build_config_empty()
     print("OK — tests dashboard config")

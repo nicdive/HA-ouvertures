@@ -1,14 +1,10 @@
 /**
- * custom:ouvertures-card — carte visuelle Gestion des ouvertures
- * Affiche le SVG d'état et les boutons de commande selon le type.
- *
- * Important : ne reconstruit le DOM que si l'état utile change
- * (évite le clignotement des images à chaque push hass).
+ * custom:ouvertures-card — une carte = une (ou plusieurs) ouverture(s).
+ * Le rangement par pièce se fait au niveau du tableau de bord, pas ici.
  */
 (() => {
-  const CARD_VERSION = "1.1.3";
+  const CARD_VERSION = "1.1.4";
   const CARD_TYPE = "ouvertures-card";
-  const NO_AREA = "Sans pièce";
 
   const OPEN_TYPES_WITH_CONTROLS = new Set([
     "portail_coulissant",
@@ -28,30 +24,6 @@
       letter-spacing: 0.01em;
       margin: 0 4px 12px;
       color: #1f2937;
-    }
-    .ov-groups {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-    .ov-group-title {
-      font-size: 1.05rem;
-      font-weight: 750;
-      color: #0f172a;
-      margin: 0 4px 10px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.45);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .ov-group-title::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #64748b;
-      flex-shrink: 0;
     }
     .ov-grid {
       display: grid;
@@ -80,24 +52,19 @@
     .ov-tile.is-ok {
       border-color: rgba(22, 163, 74, 0.35);
     }
-    .ov-area {
-      font-weight: 750;
-      font-size: 1.05rem;
-      color: #0f172a;
-      text-align: center;
-      line-height: 1.2;
-    }
     .ov-name {
-      font-weight: 550;
-      font-size: 0.82rem;
-      color: #64748b;
-      text-align: center;
-      line-height: 1.2;
-    }
-    .ov-name.ov-name-only {
       font-weight: 700;
       font-size: 0.98rem;
       color: #111827;
+      text-align: center;
+      line-height: 1.2;
+    }
+    .ov-area {
+      font-weight: 550;
+      font-size: 0.78rem;
+      color: #64748b;
+      text-align: center;
+      line-height: 1.2;
     }
     .ov-visual {
       border: 0;
@@ -157,7 +124,7 @@
     .ov-hint { color: #6b7280; font-size: 0.9rem; padding: 4px; }
     @media (max-width: 500px) {
       .ov-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-      .ov-name { font-size: 0.85rem; }
+      .ov-name { font-size: 0.9rem; }
       .ov-btn { padding: 6px 8px; font-size: 0.72rem; }
     }
   `;
@@ -202,7 +169,7 @@
             label="Entités (séparées par des virgules, mode grille)"
             .value="${(this._config.entities || []).join(", ")}"
             data-key="entities"
-            helper="Laissez vide pour une seule carte"
+            helper="Optionnel — pour plusieurs ouvertures dans une même carte"
           ></ha-textfield>
         </div>
       `;
@@ -273,7 +240,7 @@
               hass.states[e]?.attributes?.opening_type
           ));
       return match
-        ? { entity: match, title: "Ouvertures" }
+        ? { entity: match }
         : { title: "Ouvertures", entities: [] };
     }
 
@@ -320,20 +287,15 @@
       const st = this._hass?.states?.[entityId];
       if (!st) return null;
       const rawName =
-        st.attributes.name ||
-        st.attributes.friendly_name ||
-        entityId;
-      // Evite le suffixe " État" du friendly_name HA
+        st.attributes.name || st.attributes.friendly_name || entityId;
       const name = String(rawName).replace(/\s+État$/i, "").trim();
       return {
         state: st.state,
         name,
         area: st.attributes.area || "",
-        displayName: st.attributes.display_name || name,
         label: st.attributes.label || st.attributes.friendly_state || st.state,
         image: st.attributes.image || "",
         isAlert: Boolean(st.attributes.is_alert),
-        isOpen: Boolean(st.attributes.is_open),
         openingType: st.attributes.opening_type,
         openEntity: st.attributes.open_entity,
         closeEntity: st.attributes.close_entity,
@@ -341,7 +303,6 @@
       };
     }
 
-    /** Signature stable : rebuild seulement si ça change. */
     _signature(entities) {
       return entities
         .map((id) => {
@@ -354,7 +315,6 @@
             a.image || "",
             a.label || "",
             a.area || "",
-            a.display_name || "",
             a.name || "",
             a.is_alert ? 1 : 0,
             a.open_entity || "",
@@ -406,11 +366,10 @@
 
       const base = entityId.replace(/_etat$/, "").replace(/^sensor\./, "");
       const guess = (suffix) => {
-        const candidates = [
+        for (const c of [
           `button.${base}_${suffix}`,
           `button.ouvertures_${base}_${suffix}`,
-        ];
-        for (const c of candidates) {
+        ]) {
           if (this._hass.states[c]) return c;
         }
         return null;
@@ -436,22 +395,7 @@
       return buttons;
     }
 
-    _groupByArea(entities) {
-      const groups = new Map();
-      for (const entityId of entities) {
-        const info = this._attrs(entityId);
-        const area = (info && info.area) || NO_AREA;
-        if (!groups.has(area)) groups.set(area, []);
-        groups.get(area).push({ entityId, info });
-      }
-      return [...groups.entries()].sort(([a], [b]) => {
-        if (a === NO_AREA) return 1;
-        if (b === NO_AREA) return -1;
-        return a.localeCompare(b, "fr", { sensitivity: "base" });
-      });
-    }
-
-    _ensureShell(titleText) {
+    _ensureShell(grid, titleText) {
       if (!this._root) {
         this._root = document.createElement("ha-card");
         this.appendChild(this._root);
@@ -471,54 +415,33 @@
           this._root.appendChild(t);
         }
 
-        const groups = document.createElement("div");
-        groups.className = "ov-groups";
-        this._root.appendChild(groups);
+        const container = document.createElement("div");
+        container.className = grid ? "ov-grid" : "ov-single";
+        this._root.appendChild(container);
         this._built = true;
-      } else {
-        const titleEl = this._root.querySelector(".ov-title");
-        if (titleText) {
-          if (!titleEl) {
-            const t = document.createElement("div");
-            t.className = "ov-title";
-            t.textContent = titleText;
-            this._root.insertBefore(t, this._root.querySelector(".ov-groups"));
-          } else if (titleEl.textContent !== titleText) {
-            titleEl.textContent = titleText;
-          }
-        } else if (titleEl) {
-          titleEl.remove();
-        }
+        return container;
       }
-      return this._root.querySelector(".ov-groups");
-    }
 
-    _ensureGroup(groupsEl, areaName, multiGroup) {
-      const key = areaName || NO_AREA;
-      let group = groupsEl.querySelector(
-        `.ov-group[data-area="${CSS.escape(key)}"]`
-      );
-      if (!group) {
-        group = document.createElement("div");
-        group.className = "ov-group";
-        group.dataset.area = key;
-        const title = document.createElement("div");
-        title.className = "ov-group-title";
-        title.textContent = key;
-        const grid = document.createElement("div");
-        grid.className = "ov-grid";
-        group.appendChild(title);
-        group.appendChild(grid);
-        groupsEl.appendChild(group);
+      const titleEl = this._root.querySelector(".ov-title");
+      if (titleText) {
+        if (!titleEl) {
+          const t = document.createElement("div");
+          t.className = "ov-title";
+          t.textContent = titleText;
+          this._root.insertBefore(
+            t,
+            this._root.querySelector(".ov-grid, .ov-single")
+          );
+        } else if (titleEl.textContent !== titleText) {
+          titleEl.textContent = titleText;
+        }
+      } else if (titleEl) {
+        titleEl.remove();
       }
-      const titleEl = group.querySelector(".ov-group-title");
-      if (!multiGroup && key === NO_AREA) {
-        titleEl.hidden = true;
-      } else {
-        titleEl.hidden = false;
-        titleEl.textContent = key;
-      }
-      return group.querySelector(".ov-grid");
+
+      const container = this._root.querySelector(".ov-grid, .ov-single");
+      if (container) container.className = grid ? "ov-grid" : "ov-single";
+      return container;
     }
 
     _upsertTile(container, entityId, info) {
@@ -538,13 +461,12 @@
         return;
       }
 
-      const alertClass = info.isAlert ? "is-alert" : "is-ok";
-
       if (!tile) {
         tile = document.createElement("div");
         tile.dataset.entity = entityId;
         tile.innerHTML = `
           <div class="ov-name"></div>
+          <div class="ov-area" hidden></div>
           <button class="ov-visual" type="button" title="Détails">
             <img alt="" decoding="async" />
           </button>
@@ -554,11 +476,16 @@
         container.appendChild(tile);
       }
 
-      tile.className = `ov-tile ${alertClass}`;
-      const nameEl = tile.querySelector(".ov-name");
-      // La pièce est dans le titre de groupe → nom seul, bien visible
-      nameEl.textContent = info.name;
-      nameEl.classList.add("ov-name-only");
+      tile.className = `ov-tile ${info.isAlert ? "is-alert" : "is-ok"}`;
+      tile.querySelector(".ov-name").textContent = info.name;
+      const areaEl = tile.querySelector(".ov-area");
+      if (info.area) {
+        areaEl.hidden = false;
+        areaEl.textContent = info.area;
+      } else {
+        areaEl.hidden = true;
+        areaEl.textContent = "";
+      }
       tile.querySelector(".ov-label").textContent = info.label;
 
       const visual = tile.querySelector(".ov-visual");
@@ -608,40 +535,25 @@
           ${title ? `<div class="ov-title">${title}</div>` : ""}
           <div class="ov-hint">
             Choisissez un capteur <code>État</code> de l’intégration
-            <strong>Gestion des ouvertures</strong>
-            (ex. <code>sensor.baie_salon_etat</code>).
+            <strong>Gestion des ouvertures</strong>.
           </div>`;
         return;
       }
 
       const sig = this._signature(entities);
-      if (!force && sig === this._lastSig && this._built) {
-        return;
-      }
+      if (!force && sig === this._lastSig && this._built) return;
       this._lastSig = sig;
 
-      const groupsEl = this._ensureShell(this._config.title || "");
-      const grouped = this._groupByArea(entities);
-      const multiGroup = grouped.length > 1 || (grouped[0] && grouped[0][0] !== NO_AREA);
-      const areaKeys = new Set(grouped.map(([a]) => a));
+      const grid = entities.length > 1;
+      const container = this._ensureShell(grid, this._config.title || "");
 
-      groupsEl.querySelectorAll(".ov-group").forEach((g) => {
-        if (!areaKeys.has(g.dataset.area)) g.remove();
+      const keep = new Set(entities);
+      container.querySelectorAll(".ov-tile").forEach((tile) => {
+        if (!keep.has(tile.dataset.entity)) tile.remove();
       });
 
-      for (const [areaName, tiles] of grouped) {
-        const grid = this._ensureGroup(groupsEl, areaName, multiGroup);
-        grid.className = tiles.length > 1 ? "ov-grid" : "ov-single";
-
-        const keep = new Set(tiles.map((t) => t.entityId));
-        grid.querySelectorAll(".ov-tile").forEach((tile) => {
-          if (!keep.has(tile.dataset.entity)) tile.remove();
-        });
-
-        for (const { entityId, info } of tiles) {
-          this._upsertTile(grid, entityId, info);
-        }
-        groupsEl.appendChild(grid.parentElement);
+      for (const entityId of entities) {
+        this._upsertTile(container, entityId, this._attrs(entityId));
       }
     }
   }
@@ -656,7 +568,7 @@
     type: CARD_TYPE,
     name: "Ouvertures",
     description:
-      "Baies vitrées, portes, portail, garage et piscine — visuels + commandes.",
+      "Une ouverture (baie, porte, portail, garage, piscine) avec visuel.",
     preview: true,
     documentationURL: "https://github.com/nicdive/HA-ouvertures",
   };

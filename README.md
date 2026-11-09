@@ -66,9 +66,12 @@ Option **Inverser le capteur** si votre contact est à l’envers (`on` = fermé
 
 Vous pouvez ajouter **autant d’ouvertures** que nécessaire (une entrée par baie / porte / …).
 
-Pour voir clairement la **pièce** sur la carte : assignez une area au capteur
-d’ouverture (ou à l’appareil) dans **Paramètres → Appareils → … → Pièce**
-(ex. Salon, Cuisine). Le dashboard se groupe alors par pièce.
+Assignez une **pièce** (area) à chaque capteur/appareil
+(**Paramètres → Appareils → Pièce**). Le tableau de bord auto se structure alors :
+
+- section **Salon** → une carte par baie/porte de cette pièce  
+- section **Cuisine** → …  
+- chaque ouverture reste une carte séparée
 
 ## Tableau de bord
 
