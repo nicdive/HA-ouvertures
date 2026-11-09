@@ -20,6 +20,7 @@ from .const import (
     TYPE_FENETRE_SIMPLE_VOLETS,
     TYPE_GARAGE,
     TYPE_PORTAIL,
+    TYPE_PORTE_FENETRE_3,
 )
 from .entity import OuvertureEntity
 
@@ -72,7 +73,7 @@ class OuvertureOpenBinarySensor(OuvertureEntity, BinarySensorEntity):
                 return "mdi:garage-open"
             if opening_type == TYPE_PORTAIL:
                 return "mdi:gate-open"
-            if opening_type == TYPE_BAIE:
+            if opening_type in (TYPE_BAIE, TYPE_PORTE_FENETRE_3):
                 return "mdi:door-sliding-open"
             if opening_type in _WINDOW_TYPES:
                 return "mdi:window-open-variant"

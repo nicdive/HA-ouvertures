@@ -17,6 +17,7 @@ TYPE_FENETRE_SIMPLE = "fenetre_simple"
 TYPE_FENETRE_SIMPLE_VOLETS = "fenetre_simple_volets"
 TYPE_FENETRE_DOUBLE = "fenetre_double"
 TYPE_FENETRE_DOUBLE_VOLETS = "fenetre_double_volets"
+TYPE_PORTE_FENETRE_3 = "porte_fenetre_3_battants"
 TYPE_PORTE = "porte"
 TYPE_PORTAIL = "portail_coulissant"
 TYPE_GARAGE = "garage_sectionnelle"
@@ -63,6 +64,14 @@ OPENING_TYPES = {
         "needs_close": False,
         "needs_impulse": False,
     },
+    TYPE_PORTE_FENETRE_3: {
+        "label": "Porte-fenêtre 3 battants (haut arrondi + volet roulant)",
+        "icon": "mdi:door-sliding-open",
+        "needs_shutter": True,
+        "needs_open": False,
+        "needs_close": False,
+        "needs_impulse": False,
+    },
     TYPE_PORTE: {
         "label": "Porte simple",
         "icon": "mdi:door",
@@ -102,6 +111,7 @@ TYPES_WITH_SHUTTERS = frozenset(
         TYPE_BAIE,
         TYPE_FENETRE_SIMPLE_VOLETS,
         TYPE_FENETRE_DOUBLE_VOLETS,
+        TYPE_PORTE_FENETRE_3,
     }
 )
 

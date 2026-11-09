@@ -125,6 +125,24 @@ def test_opening_types_include_fenetres():
     assert const.TYPE_FENETRE_SIMPLE not in const.TYPES_WITH_SHUTTERS
 
 
+def test_porte_fenetre_3_battants():
+    assert const.TYPE_PORTE_FENETRE_3 in const.OPENING_TYPES
+    assert const.TYPE_PORTE_FENETRE_3 in const.TYPES_WITH_SHUTTERS
+    assert (
+        helpers.combined_state(const.TYPE_PORTE_FENETRE_3, True, False)
+        == const.STATE_OUVERTE_VOLETS_FERMES
+    )
+    img = helpers.image_for_state(
+        const.TYPE_PORTE_FENETRE_3, const.STATE_FERMEE_VOLETS_OUVERTS
+    )
+    assert img == "porte_fenetre_3_fermee_volet_ouvert.svg"
+    label = helpers.human_label(
+        const.TYPE_PORTE_FENETRE_3, const.STATE_FERMEE_VOLETS_OUVERTS
+    )
+    assert label.startswith("Porte-fenêtre")
+    assert "Volet ouvert" in label
+
+
 if __name__ == "__main__":
     test_is_entity_open_binary()
     test_is_entity_open_cover_position()
@@ -134,4 +152,5 @@ if __name__ == "__main__":
     test_fenetre_simple_sans_volets()
     test_fenetre_double_avec_volets()
     test_opening_types_include_fenetres()
+    test_porte_fenetre_3_battants()
     print("OK — tous les tests helpers passent")

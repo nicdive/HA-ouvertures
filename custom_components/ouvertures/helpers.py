@@ -23,6 +23,7 @@ from .const import (
     TYPE_PISCINE,
     TYPE_PORTAIL,
     TYPE_PORTE,
+    TYPE_PORTE_FENETRE_3,
     TYPES_WITH_SHUTTERS,
 )
 
@@ -116,6 +117,14 @@ def image_for_state(opening_type: str, state: str) -> str:
             STATE_FERME: "fenetre_double_fermee_volets_fermes.svg",
             STATE_OUVERT: "fenetre_double_ouverte_volets_ouverts.svg",
         },
+        TYPE_PORTE_FENETRE_3: {
+            STATE_FERMEE_VOLETS_OUVERTS: "porte_fenetre_3_fermee_volet_ouvert.svg",
+            STATE_OUVERTE_VOLETS_OUVERTS: "porte_fenetre_3_ouverte_volet_ouvert.svg",
+            STATE_FERMEE_VOLETS_FERMES: "porte_fenetre_3_fermee_volet_ferme.svg",
+            STATE_OUVERTE_VOLETS_FERMES: "porte_fenetre_3_ouverte_volet_ferme.svg",
+            STATE_FERME: "porte_fenetre_3_fermee_volet_ferme.svg",
+            STATE_OUVERT: "porte_fenetre_3_ouverte_volet_ouvert.svg",
+        },
         TYPE_PORTE: {
             STATE_FERME: "porte_fermee.svg",
             STATE_OUVERT: "porte_ouverte.svg",
@@ -140,6 +149,8 @@ def image_for_state(opening_type: str, state: str) -> str:
 def _noun(opening_type: str) -> str:
     if opening_type == TYPE_BAIE:
         return "Baie"
+    if opening_type == TYPE_PORTE_FENETRE_3:
+        return "Porte-fenêtre"
     if opening_type in (
         TYPE_FENETRE_SIMPLE,
         TYPE_FENETRE_SIMPLE_VOLETS,
@@ -161,14 +172,20 @@ def _noun(opening_type: str) -> str:
 def human_label(opening_type: str, state: str) -> str:
     """Libellé français de l'état."""
     noun = _noun(opening_type)
+    if opening_type == TYPE_PORTE_FENETRE_3:
+        shutter_open = "Volet ouvert"
+        shutter_closed = "Volet fermé"
+    else:
+        shutter_open = "Volets ouverts"
+        shutter_closed = "Volets fermés"
     if state == STATE_FERMEE_VOLETS_OUVERTS:
-        return f"{noun} fermée · Volets ouverts"
+        return f"{noun} fermée · {shutter_open}"
     if state == STATE_OUVERTE_VOLETS_OUVERTS:
-        return f"{noun} ouverte · Volets ouverts"
+        return f"{noun} ouverte · {shutter_open}"
     if state == STATE_FERMEE_VOLETS_FERMES:
-        return f"{noun} fermée · Volets fermés"
+        return f"{noun} fermée · {shutter_closed}"
     if state == STATE_OUVERTE_VOLETS_FERMES:
-        return f"{noun} ouverte · Volets fermés"
+        return f"{noun} ouverte · {shutter_closed}"
     if state == STATE_FERME:
         if opening_type == TYPE_PORTAIL:
             return "Portail fermé"

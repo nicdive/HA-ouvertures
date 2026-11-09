@@ -1,6 +1,6 @@
 # Gestion des ouvertures
 
-Module Home Assistant pour centraliser baies vitrées, fenêtres (simple / double battant, avec ou sans volets), portes, portail coulissant, porte de garage sectionnelle et volet de piscine — avec les visuels inspirés de Jeedom.
+Module Home Assistant pour centraliser baies vitrées, portes-fenêtres (3 battants, haut arrondi + volet roulant), fenêtres (simple / double battant, avec ou sans volets), portes, portail coulissant, porte de garage sectionnelle et volet de piscine — avec les visuels inspirés de Jeedom.
 
 ![Version](https://img.shields.io/github/v/release/nicdive/HA-ouvertures?style=flat-square)
 ![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg?style=flat-square)
@@ -45,6 +45,7 @@ La carte Lovelace `custom:ouvertures-card` et les images SVG sont enregistrées 
 | **Fenêtre simple + volets** | Oui | Oui | — (4 images d’état) |
 | **Fenêtre double battant** | Oui | — | — |
 | **Fenêtre double + volets** | Oui | Oui | — (4 images d’état) |
+| **Porte-fenêtre 3 battants** | Oui | Oui (volet roulant) | — (haut arrondi, 4 états) |
 | **Porte simple** | Oui | — | — |
 | **Portail coulissant** | Oui | — | Ouvrir · Fermer · Impulsion |
 | **Garage sectionnelle** | Oui | — | Impulsion |
@@ -61,7 +62,7 @@ Chaque ouverture crée :
 1. **Paramètres → Appareils et services → Ajouter une intégration → Gestion des ouvertures**
 2. Choisir le **type** et le **nom**
 3. Sélectionner les entités demandées :
-   - Baie / fenêtre + volets : capteur ouverture + capteur/cover volet
+   - Baie / porte-fenêtre 3 battants / fenêtre + volets : capteur ouverture + capteur/cover volet
    - Fenêtre sans volets / porte / piscine : capteur d’ouverture
    - Portail : capteur + action ouvrir + fermer + impulsion
    - Garage : capteur + bouton impulsionnel

@@ -25,6 +25,7 @@ from .const import (
     TYPE_PISCINE,
     TYPE_PORTAIL,
     TYPE_PORTE,
+    TYPE_PORTE_FENETRE_3,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -36,6 +37,7 @@ NO_AREA = "Sans pièce"
 
 _TYPE_ORDER = (
     TYPE_BAIE,
+    TYPE_PORTE_FENETRE_3,
     TYPE_FENETRE_SIMPLE,
     TYPE_FENETRE_SIMPLE_VOLETS,
     TYPE_FENETRE_DOUBLE,
