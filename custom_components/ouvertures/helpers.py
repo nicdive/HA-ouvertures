@@ -15,10 +15,15 @@ from .const import (
     STATE_OUVERTE_VOLETS_FERMES,
     STATE_OUVERTE_VOLETS_OUVERTS,
     TYPE_BAIE,
+    TYPE_FENETRE_DOUBLE,
+    TYPE_FENETRE_DOUBLE_VOLETS,
+    TYPE_FENETRE_SIMPLE,
+    TYPE_FENETRE_SIMPLE_VOLETS,
     TYPE_GARAGE,
     TYPE_PISCINE,
     TYPE_PORTAIL,
     TYPE_PORTE,
+    TYPES_WITH_SHUTTERS,
 )
 
 if TYPE_CHECKING:
@@ -62,7 +67,7 @@ def combined_state(
     if contact_open is None:
         return STATE_INCONNU
 
-    if opening_type == TYPE_BAIE:
+    if opening_type in TYPES_WITH_SHUTTERS:
         if shutter_open is None:
             return STATE_OUVERT if contact_open else STATE_FERME
         if contact_open and shutter_open:
@@ -87,6 +92,30 @@ def image_for_state(opening_type: str, state: str) -> str:
             STATE_FERME: "baie_fermee_volets_fermes.svg",
             STATE_OUVERT: "baie_ouverte_volets_ouverts.svg",
         },
+        TYPE_FENETRE_SIMPLE: {
+            STATE_FERME: "fenetre_simple_fermee.svg",
+            STATE_OUVERT: "fenetre_simple_ouverte.svg",
+        },
+        TYPE_FENETRE_SIMPLE_VOLETS: {
+            STATE_FERMEE_VOLETS_OUVERTS: "fenetre_simple_fermee_volets_ouverts.svg",
+            STATE_OUVERTE_VOLETS_OUVERTS: "fenetre_simple_ouverte_volets_ouverts.svg",
+            STATE_FERMEE_VOLETS_FERMES: "fenetre_simple_fermee_volets_fermes.svg",
+            STATE_OUVERTE_VOLETS_FERMES: "fenetre_simple_ouverte_volets_fermes.svg",
+            STATE_FERME: "fenetre_simple_fermee_volets_fermes.svg",
+            STATE_OUVERT: "fenetre_simple_ouverte_volets_ouverts.svg",
+        },
+        TYPE_FENETRE_DOUBLE: {
+            STATE_FERME: "fenetre_double_fermee.svg",
+            STATE_OUVERT: "fenetre_double_ouverte.svg",
+        },
+        TYPE_FENETRE_DOUBLE_VOLETS: {
+            STATE_FERMEE_VOLETS_OUVERTS: "fenetre_double_fermee_volets_ouverts.svg",
+            STATE_OUVERTE_VOLETS_OUVERTS: "fenetre_double_ouverte_volets_ouverts.svg",
+            STATE_FERMEE_VOLETS_FERMES: "fenetre_double_fermee_volets_fermes.svg",
+            STATE_OUVERTE_VOLETS_FERMES: "fenetre_double_ouverte_volets_fermes.svg",
+            STATE_FERME: "fenetre_double_fermee_volets_fermes.svg",
+            STATE_OUVERT: "fenetre_double_ouverte_volets_ouverts.svg",
+        },
         TYPE_PORTE: {
             STATE_FERME: "porte_fermee.svg",
             STATE_OUVERT: "porte_ouverte.svg",
@@ -108,30 +137,61 @@ def image_for_state(opening_type: str, state: str) -> str:
     return type_map.get(state, type_map.get(STATE_FERME, "porte_fermee.svg"))
 
 
+def _noun(opening_type: str) -> str:
+    if opening_type == TYPE_BAIE:
+        return "Baie"
+    if opening_type in (
+        TYPE_FENETRE_SIMPLE,
+        TYPE_FENETRE_SIMPLE_VOLETS,
+        TYPE_FENETRE_DOUBLE,
+        TYPE_FENETRE_DOUBLE_VOLETS,
+    ):
+        return "Fenêtre"
+    if opening_type == TYPE_PORTE:
+        return "Porte"
+    if opening_type == TYPE_PORTAIL:
+        return "Portail"
+    if opening_type == TYPE_GARAGE:
+        return "Garage"
+    if opening_type == TYPE_PISCINE:
+        return "Volet"
+    return "Ouverture"
+
+
 def human_label(opening_type: str, state: str) -> str:
     """Libellé français de l'état."""
-    labels = {
-        STATE_FERMEE_VOLETS_OUVERTS: "Baie fermée · Volets ouverts",
-        STATE_OUVERTE_VOLETS_OUVERTS: "Baie ouverte · Volets ouverts",
-        STATE_FERMEE_VOLETS_FERMES: "Baie fermée · Volets fermés",
-        STATE_OUVERTE_VOLETS_FERMES: "Baie ouverte · Volets fermés",
-        STATE_FERME: {
-            TYPE_PORTE: "Porte fermée",
-            TYPE_PORTAIL: "Portail fermé",
-            TYPE_GARAGE: "Garage fermé",
-            TYPE_PISCINE: "Volet fermé",
-            TYPE_BAIE: "Baie fermée",
-        }.get(opening_type, "Fermé"),
-        STATE_OUVERT: {
-            TYPE_PORTE: "Porte ouverte",
-            TYPE_PORTAIL: "Portail ouvert",
-            TYPE_GARAGE: "Garage ouvert",
-            TYPE_PISCINE: "Volet ouvert",
-            TYPE_BAIE: "Baie ouverte",
-        }.get(opening_type, "Ouvert"),
-        STATE_INCONNU: "État inconnu",
-    }
-    return labels.get(state, state)
+    noun = _noun(opening_type)
+    if state == STATE_FERMEE_VOLETS_OUVERTS:
+        return f"{noun} fermée · Volets ouverts"
+    if state == STATE_OUVERTE_VOLETS_OUVERTS:
+        return f"{noun} ouverte · Volets ouverts"
+    if state == STATE_FERMEE_VOLETS_FERMES:
+        return f"{noun} fermée · Volets fermés"
+    if state == STATE_OUVERTE_VOLETS_FERMES:
+        return f"{noun} ouverte · Volets fermés"
+    if state == STATE_FERME:
+        if opening_type == TYPE_PORTAIL:
+            return "Portail fermé"
+        if opening_type == TYPE_GARAGE:
+            return "Garage fermé"
+        if opening_type == TYPE_PISCINE:
+            return "Volet fermé"
+        if opening_type == TYPE_PORTE:
+            return "Porte fermée"
+        return f"{noun} fermée"
+    if state == STATE_OUVERT:
+        if opening_type == TYPE_PORTAIL:
+            return "Portail ouvert"
+        if opening_type == TYPE_GARAGE:
+            return "Garage ouvert"
+        if opening_type == TYPE_PISCINE:
+            return "Volet ouvert"
+        if opening_type == TYPE_PORTE:
+            return "Porte ouverte"
+        return f"{noun} ouverte"
+    if state == STATE_INCONNU:
+        return "État inconnu"
+    return state
 
 
 def is_alert(opening_type: str, state: str) -> bool:

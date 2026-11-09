@@ -13,6 +13,10 @@ CONF_IMPULSE_ENTITY = "impulse_entity"
 CONF_INVERTED = "inverted"
 
 TYPE_BAIE = "baie_vitree"
+TYPE_FENETRE_SIMPLE = "fenetre_simple"
+TYPE_FENETRE_SIMPLE_VOLETS = "fenetre_simple_volets"
+TYPE_FENETRE_DOUBLE = "fenetre_double"
+TYPE_FENETRE_DOUBLE_VOLETS = "fenetre_double_volets"
 TYPE_PORTE = "porte"
 TYPE_PORTAIL = "portail_coulissant"
 TYPE_GARAGE = "garage_sectionnelle"
@@ -22,6 +26,38 @@ OPENING_TYPES = {
     TYPE_BAIE: {
         "label": "Baie vitrée",
         "icon": "mdi:door-sliding",
+        "needs_shutter": True,
+        "needs_open": False,
+        "needs_close": False,
+        "needs_impulse": False,
+    },
+    TYPE_FENETRE_SIMPLE: {
+        "label": "Fenêtre simple battant",
+        "icon": "mdi:window-closed-variant",
+        "needs_shutter": False,
+        "needs_open": False,
+        "needs_close": False,
+        "needs_impulse": False,
+    },
+    TYPE_FENETRE_SIMPLE_VOLETS: {
+        "label": "Fenêtre simple battant + volets",
+        "icon": "mdi:window-shutter",
+        "needs_shutter": True,
+        "needs_open": False,
+        "needs_close": False,
+        "needs_impulse": False,
+    },
+    TYPE_FENETRE_DOUBLE: {
+        "label": "Fenêtre double battant",
+        "icon": "mdi:window-closed-variant",
+        "needs_shutter": False,
+        "needs_open": False,
+        "needs_close": False,
+        "needs_impulse": False,
+    },
+    TYPE_FENETRE_DOUBLE_VOLETS: {
+        "label": "Fenêtre double battant + volets",
+        "icon": "mdi:window-shutter",
         "needs_shutter": True,
         "needs_open": False,
         "needs_close": False,
@@ -61,7 +97,15 @@ OPENING_TYPES = {
     },
 }
 
-# États combinés baie + volets
+TYPES_WITH_SHUTTERS = frozenset(
+    {
+        TYPE_BAIE,
+        TYPE_FENETRE_SIMPLE_VOLETS,
+        TYPE_FENETRE_DOUBLE_VOLETS,
+    }
+)
+
+# États combinés baie/fenêtre + volets
 STATE_FERMEE_VOLETS_OUVERTS = "fermee_volets_ouverts"
 STATE_OUVERTE_VOLETS_OUVERTS = "ouverte_volets_ouverts"
 STATE_FERMEE_VOLETS_FERMES = "fermee_volets_fermes"

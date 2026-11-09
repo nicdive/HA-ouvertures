@@ -5,6 +5,14 @@ Toutes les versions notables de **Gestion des ouvertures**.
 Le format s’inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 et le projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [1.2.0] - 2026-11-09
+
+### Ajouté
+
+- Types **fenêtre simple battant** et **fenêtre double battant**
+- Variantes **avec volets** (4 états) ou **sans volets** (ouvert / fermé)
+- Visuels SVG dédiés pour chaque combinaison
+
 ## [1.1.5] - 2026-11-09
 
 ### Changé
@@ -66,6 +74,7 @@ et le projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 - Assets brand (`brand/icon.png`, logo) pour le Marketplace
 - Exemple de tableau de bord (`dashboards/ouvertures.yaml`)
 
+[1.2.0]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.2.0
 [1.1.5]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.1.5
 [1.1.4]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.1.4
 [1.1.3]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.1.3

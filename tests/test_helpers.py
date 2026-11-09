@@ -79,10 +79,59 @@ def test_images_and_labels():
     assert "ouverte" in label.lower()
 
 
+def test_fenetre_simple_sans_volets():
+    assert (
+        helpers.combined_state(const.TYPE_FENETRE_SIMPLE, False)
+        == const.STATE_FERME
+    )
+    assert (
+        helpers.combined_state(const.TYPE_FENETRE_SIMPLE, True)
+        == const.STATE_OUVERT
+    )
+    assert (
+        helpers.image_for_state(const.TYPE_FENETRE_SIMPLE, const.STATE_OUVERT)
+        == "fenetre_simple_ouverte.svg"
+    )
+    assert "Fenêtre" in helpers.human_label(
+        const.TYPE_FENETRE_SIMPLE, const.STATE_OUVERT
+    )
+
+
+def test_fenetre_double_avec_volets():
+    assert (
+        helpers.combined_state(const.TYPE_FENETRE_DOUBLE_VOLETS, False, True)
+        == const.STATE_FERMEE_VOLETS_OUVERTS
+    )
+    img = helpers.image_for_state(
+        const.TYPE_FENETRE_DOUBLE_VOLETS, const.STATE_FERMEE_VOLETS_OUVERTS
+    )
+    assert img == "fenetre_double_fermee_volets_ouverts.svg"
+    label = helpers.human_label(
+        const.TYPE_FENETRE_DOUBLE_VOLETS, const.STATE_FERMEE_VOLETS_OUVERTS
+    )
+    assert label.startswith("Fenêtre")
+    assert "Volets ouverts" in label
+
+
+def test_opening_types_include_fenetres():
+    for key in (
+        const.TYPE_FENETRE_SIMPLE,
+        const.TYPE_FENETRE_SIMPLE_VOLETS,
+        const.TYPE_FENETRE_DOUBLE,
+        const.TYPE_FENETRE_DOUBLE_VOLETS,
+    ):
+        assert key in const.OPENING_TYPES
+    assert const.TYPE_FENETRE_SIMPLE_VOLETS in const.TYPES_WITH_SHUTTERS
+    assert const.TYPE_FENETRE_SIMPLE not in const.TYPES_WITH_SHUTTERS
+
+
 if __name__ == "__main__":
     test_is_entity_open_binary()
     test_is_entity_open_cover_position()
     test_baie_combined_states()
     test_porte_states()
     test_images_and_labels()
+    test_fenetre_simple_sans_volets()
+    test_fenetre_double_avec_volets()
+    test_opening_types_include_fenetres()
     print("OK — tous les tests helpers passent")

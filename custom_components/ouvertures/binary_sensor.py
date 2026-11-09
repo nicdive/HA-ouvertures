@@ -10,8 +10,27 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import CONF_OPENING_TYPE, OPENING_TYPES, TYPE_BAIE, TYPE_GARAGE, TYPE_PORTAIL
+from .const import (
+    CONF_OPENING_TYPE,
+    OPENING_TYPES,
+    TYPE_BAIE,
+    TYPE_FENETRE_DOUBLE,
+    TYPE_FENETRE_DOUBLE_VOLETS,
+    TYPE_FENETRE_SIMPLE,
+    TYPE_FENETRE_SIMPLE_VOLETS,
+    TYPE_GARAGE,
+    TYPE_PORTAIL,
+)
 from .entity import OuvertureEntity
+
+_WINDOW_TYPES = frozenset(
+    {
+        TYPE_FENETRE_SIMPLE,
+        TYPE_FENETRE_SIMPLE_VOLETS,
+        TYPE_FENETRE_DOUBLE,
+        TYPE_FENETRE_DOUBLE_VOLETS,
+    }
+)
 
 
 async def async_setup_entry(
@@ -32,10 +51,10 @@ class OuvertureOpenBinarySensor(OuvertureEntity, BinarySensorEntity):
         super().__init__(hass, entry)
         self._attr_unique_id = f"{entry.entry_id}_ouvert"
         opening_type = self.entry_data[CONF_OPENING_TYPE]
-        if opening_type in (TYPE_GARAGE,):
+        if opening_type == TYPE_GARAGE:
             self._attr_device_class = BinarySensorDeviceClass.GARAGE_DOOR
-        elif opening_type in (TYPE_BAIE, TYPE_PORTAIL):
-            self._attr_device_class = BinarySensorDeviceClass.DOOR
+        elif opening_type in _WINDOW_TYPES:
+            self._attr_device_class = BinarySensorDeviceClass.WINDOW
         else:
             self._attr_device_class = BinarySensorDeviceClass.DOOR
 
@@ -55,5 +74,7 @@ class OuvertureOpenBinarySensor(OuvertureEntity, BinarySensorEntity):
                 return "mdi:gate-open"
             if opening_type == TYPE_BAIE:
                 return "mdi:door-sliding-open"
+            if opening_type in _WINDOW_TYPES:
+                return "mdi:window-open-variant"
             return "mdi:door-open"
         return base
