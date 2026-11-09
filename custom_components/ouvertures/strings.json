@@ -1,0 +1,59 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Nouvelle ouverture",
+        "description": "Choisissez le type d'ouverture et son nom.",
+        "data": {
+          "name": "Nom",
+          "opening_type": "Type",
+          "inverted": "Inverser le capteur d'ouverture"
+        }
+      },
+      "entities": {
+        "title": "Entités liées",
+        "description": "Configurez les capteurs / commandes pour « {name} » ({type}).",
+        "data": {
+          "contact_entity": "Capteur d'ouverture",
+          "shutter_entity": "Capteur / cover du volet",
+          "open_entity": "Bouton / action Ouvrir",
+          "close_entity": "Bouton / action Fermer",
+          "impulse_entity": "Bouton impulsionnel"
+        }
+      }
+    },
+    "error": {
+      "invalid_name": "Le nom est obligatoire."
+    },
+    "abort": {
+      "already_configured": "Cette ouverture est déjà configurée."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Modifier les entités",
+        "data": {
+          "contact_entity": "Capteur d'ouverture",
+          "shutter_entity": "Capteur / cover du volet",
+          "open_entity": "Bouton / action Ouvrir",
+          "close_entity": "Bouton / action Fermer",
+          "impulse_entity": "Bouton impulsionnel",
+          "inverted": "Inverser le capteur d'ouverture"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "etat": {
+        "name": "État"
+      }
+    },
+    "binary_sensor": {
+      "ouvert": {
+        "name": "Ouvert"
+      }
+    }
+  }
+}

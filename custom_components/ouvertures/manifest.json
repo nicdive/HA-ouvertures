@@ -1,0 +1,11 @@
+{
+  "domain": "ouvertures",
+  "name": "Gestion des ouvertures",
+  "codeowners": ["@nicdive"],
+  "config_flow": true,
+  "documentation": "https://github.com/nicdive/HA-ouvertures",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/nicdive/HA-ouvertures/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}

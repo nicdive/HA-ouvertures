@@ -1,0 +1,59 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "New opening",
+        "description": "Choose the opening type and its name.",
+        "data": {
+          "name": "Name",
+          "opening_type": "Type",
+          "inverted": "Invert opening sensor"
+        }
+      },
+      "entities": {
+        "title": "Linked entities",
+        "description": "Configure sensors / controls for “{name}” ({type}).",
+        "data": {
+          "contact_entity": "Opening sensor",
+          "shutter_entity": "Shutter sensor / cover",
+          "open_entity": "Open action",
+          "close_entity": "Close action",
+          "impulse_entity": "Impulse button"
+        }
+      }
+    },
+    "error": {
+      "invalid_name": "Name is required."
+    },
+    "abort": {
+      "already_configured": "This opening is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Edit entities",
+        "data": {
+          "contact_entity": "Opening sensor",
+          "shutter_entity": "Shutter sensor / cover",
+          "open_entity": "Open action",
+          "close_entity": "Close action",
+          "impulse_entity": "Impulse button",
+          "inverted": "Invert opening sensor"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "etat": {
+        "name": "State"
+      }
+    },
+    "binary_sensor": {
+      "ouvert": {
+        "name": "Open"
+      }
+    }
+  }
+}
