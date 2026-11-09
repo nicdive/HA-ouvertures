@@ -69,9 +69,9 @@ Vous pouvez ajouter **autant d’ouvertures** que nécessaire (une entrée par b
 Assignez une **pièce** (area) à chaque capteur/appareil
 (**Paramètres → Appareils → Pièce**). Le tableau de bord auto se structure alors :
 
-- section **Salon** → une carte par baie/porte de cette pièce  
+- section **Salon** → grille dense des ouvertures de cette pièce  
 - section **Cuisine** → …  
-- chaque ouverture reste une carte séparée
+- chaque ouverture reste une **tuile séparée** (≈ 3 colonnes sur iPhone)
 
 ## Tableau de bord
 

@@ -1,9 +1,9 @@
 /**
- * custom:ouvertures-card — une carte = une (ou plusieurs) ouverture(s).
- * Le rangement par pièce se fait au niveau du tableau de bord, pas ici.
+ * custom:ouvertures-card — grille dense (3×n mobile) d'ouvertures.
+ * Organisation par pièce = dashboard ; chaque ouverture = une tuile.
  */
 (() => {
-  const CARD_VERSION = "1.1.4";
+  const CARD_VERSION = "1.1.5";
   const CARD_TYPE = "ouvertures-card";
 
   const OPEN_TYPES_WITH_CONTROLS = new Set([
@@ -14,57 +14,78 @@
   const STYLES = `
     :host { display: block; }
     ha-card {
-      padding: 12px;
+      --ov-pad: 8px;
+      --ov-gap: 6px;
+      --ov-img: 96px;
+      --ov-name: 0.72rem;
+      --ov-label: 0.62rem;
+      --ov-radius: 12px;
+      padding: var(--ov-pad);
       background: linear-gradient(165deg, #f8fafc 0%, #eef2ff 45%, #f1f5f9 100%);
       overflow: hidden;
     }
+    ha-card.is-compact {
+      --ov-pad: 6px;
+      --ov-gap: 5px;
+      --ov-img: 78px;
+      --ov-name: 0.68rem;
+      --ov-label: 0.58rem;
+      --ov-radius: 10px;
+    }
     .ov-title {
-      font-size: 1.15rem;
+      font-size: 0.95rem;
       font-weight: 700;
-      letter-spacing: 0.01em;
-      margin: 0 4px 12px;
+      margin: 0 2px 8px;
       color: #1f2937;
     }
     .ov-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(var(--ov-cols, 3), minmax(0, 1fr));
+      gap: var(--ov-gap);
+      align-items: start;
     }
-    .ov-single { display: block; max-width: 280px; margin: 0 auto; }
     .ov-tile {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-      padding: 10px 8px 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.72);
+      gap: 3px;
+      padding: 6px 4px 7px;
+      border-radius: var(--ov-radius);
+      background: rgba(255,255,255,0.78);
       border: 1px solid rgba(148,163,184,0.35);
-      transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-    }
-    .ov-tile:hover {
-      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      min-width: 0;
+      transition: border-color 0.15s ease, background 0.15s ease;
     }
     .ov-tile.is-alert {
       border-color: rgba(234, 88, 12, 0.55);
-      background: rgba(255, 247, 237, 0.9);
+      background: rgba(255, 247, 237, 0.92);
     }
     .ov-tile.is-ok {
       border-color: rgba(22, 163, 74, 0.35);
     }
     .ov-name {
       font-weight: 700;
-      font-size: 0.98rem;
+      font-size: var(--ov-name);
       color: #111827;
       text-align: center;
-      line-height: 1.2;
+      line-height: 1.15;
+      max-width: 100%;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      word-break: break-word;
     }
     .ov-area {
       font-weight: 550;
-      font-size: 0.78rem;
+      font-size: 0.55rem;
       color: #64748b;
       text-align: center;
-      line-height: 1.2;
+      line-height: 1.1;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .ov-visual {
       border: 0;
@@ -76,17 +97,25 @@
       justify-content: center;
     }
     .ov-visual img {
-      width: min(100%, 220px);
+      width: var(--ov-img);
+      height: var(--ov-img);
+      max-width: 100%;
       aspect-ratio: 1;
       object-fit: contain;
       display: block;
-      filter: drop-shadow(0 4px 10px rgba(15,23,42,0.12));
+      filter: drop-shadow(0 2px 6px rgba(15,23,42,0.1));
     }
     .ov-label {
-      font-size: 0.8rem;
+      font-size: var(--ov-label);
       color: #4b5563;
       text-align: center;
-      min-height: 2.2em;
+      line-height: 1.15;
+      max-width: 100%;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      min-height: 0;
     }
     .ov-tile.is-alert .ov-label {
       color: #c2410c;
@@ -95,37 +124,51 @@
     .ov-controls {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 3px;
       justify-content: center;
       width: 100%;
-      margin-top: 2px;
     }
     .ov-btn {
       border: 0;
-      border-radius: 10px;
-      padding: 7px 12px;
-      font-size: 0.78rem;
+      border-radius: 7px;
+      padding: 4px 6px;
+      font-size: 0.58rem;
       font-weight: 650;
       cursor: pointer;
       color: #fff;
       background: #374151;
-      transition: filter 0.15s ease, transform 0.15s ease;
+      line-height: 1.1;
     }
-    .ov-btn:hover { filter: brightness(1.08); }
     .ov-btn:active { transform: scale(0.97); }
     .ov-btn.ov-open { background: #16a34a; }
     .ov-btn.ov-close { background: #4b5563; }
     .ov-btn.ov-impulse { background: #ea580c; }
     .ov-missing {
-      min-height: 160px;
+      min-height: 90px;
       justify-content: center;
       color: #b91c1c;
     }
-    .ov-hint { color: #6b7280; font-size: 0.9rem; padding: 4px; }
-    @media (max-width: 500px) {
-      .ov-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-      .ov-name { font-size: 0.9rem; }
-      .ov-btn { padding: 6px 8px; font-size: 0.72rem; }
+    .ov-hint { color: #6b7280; font-size: 0.85rem; padding: 4px; }
+
+    /* Téléphone large / phablet : toujours 3 colonnes en compact */
+    @media (max-width: 430px) {
+      ha-card.is-compact { --ov-img: 72px; --ov-pad: 5px; --ov-gap: 4px; }
+    }
+    /* Tablette / desktop : 4 colonnes */
+    @media (min-width: 700px) {
+      ha-card {
+        --ov-img: 110px;
+        --ov-name: 0.8rem;
+        --ov-label: 0.7rem;
+        --ov-pad: 10px;
+        --ov-gap: 8px;
+      }
+      ha-card.is-compact { --ov-img: 96px; }
+      .ov-grid { grid-template-columns: repeat(var(--ov-cols-md, 4), minmax(0, 1fr)); }
+    }
+    @media (min-width: 1100px) {
+      .ov-grid { grid-template-columns: repeat(var(--ov-cols-lg, 4), minmax(0, 1fr)); }
+      ha-card { --ov-img: 120px; }
     }
   `;
 
@@ -166,10 +209,9 @@
             allow-custom-entity
           ></ha-entity-picker>
           <ha-textfield
-            label="Entités (séparées par des virgules, mode grille)"
+            label="Entités (virgules) — grille dense"
             .value="${(this._config.entities || []).join(", ")}"
             data-key="entities"
-            helper="Optionnel — pour plusieurs ouvertures dans une même carte"
           ></ha-textfield>
         </div>
       `;
@@ -240,8 +282,8 @@
               hass.states[e]?.attributes?.opening_type
           ));
       return match
-        ? { entity: match }
-        : { title: "Ouvertures", entities: [] };
+        ? { entity: match, compact: true, columns: 3 }
+        : { title: "Ouvertures", entities: [], compact: true, columns: 3 };
     }
 
     static async getConfigElement() {
@@ -271,16 +313,33 @@
     }
 
     getCardSize() {
-      if (this._config?.entities?.length) {
-        return Math.ceil(this._config.entities.length / 2) * 4;
-      }
-      return 5;
+      const n = this._entities().length || 1;
+      const cols = this._columns();
+      return Math.max(2, Math.ceil(n / cols) * 2);
     }
 
     _entities() {
       if (this._config.entities?.length) return this._config.entities;
       if (this._config.entity) return [this._config.entity];
       return [];
+    }
+
+    _isCompact() {
+      if (this._config.compact === false) return false;
+      if (this._config.compact === true) return true;
+      return this._entities().length > 1;
+    }
+
+    _showArea() {
+      if (this._config.show_area === false) return false;
+      if (this._config.show_area === true) return true;
+      // Par défaut : afficher la pièce seulement si pas déjà dans un titre de section
+      return !this._isCompact();
+    }
+
+    _columns() {
+      const n = Number(this._config.columns);
+      return Number.isFinite(n) && n >= 2 && n <= 6 ? Math.floor(n) : 3;
     }
 
     _attrs(entityId) {
@@ -304,26 +363,36 @@
     }
 
     _signature(entities) {
-      return entities
-        .map((id) => {
-          const st = this._hass?.states?.[id];
-          if (!st) return `${id}|missing`;
-          const a = st.attributes || {};
-          return [
-            id,
-            st.state,
-            a.image || "",
-            a.label || "",
-            a.area || "",
-            a.name || "",
-            a.is_alert ? 1 : 0,
-            a.open_entity || "",
-            a.close_entity || "",
-            a.impulse_entity || "",
-            a.opening_type || "",
-          ].join("|");
-        })
-        .join(";");
+      const mode = [
+        this._isCompact() ? "c" : "n",
+        this._showArea() ? "a" : "-",
+        this._columns(),
+        this._config.title || "",
+      ].join("/");
+      return (
+        mode +
+        "|" +
+        entities
+          .map((id) => {
+            const st = this._hass?.states?.[id];
+            if (!st) return `${id}|missing`;
+            const a = st.attributes || {};
+            return [
+              id,
+              st.state,
+              a.image || "",
+              a.label || "",
+              a.area || "",
+              a.name || "",
+              a.is_alert ? 1 : 0,
+              a.open_entity || "",
+              a.close_entity || "",
+              a.impulse_entity || "",
+              a.opening_type || "",
+            ].join("|");
+          })
+          .join(";")
+      );
     }
 
     _onClick(ev) {
@@ -381,26 +450,34 @@
 
       const buttons = [];
       if (info.openingType === "portail_coulissant") {
-        if (openBtn) buttons.push({ cls: "ov-open", id: openBtn, label: "Ouvrir" });
+        if (openBtn) buttons.push({ cls: "ov-open", id: openBtn, label: "Ouv." });
         if (closeBtn)
-          buttons.push({ cls: "ov-close", id: closeBtn, label: "Fermer" });
+          buttons.push({ cls: "ov-close", id: closeBtn, label: "Ferm." });
       }
       if (impulseBtn) {
         buttons.push({
           cls: "ov-impulse",
           id: impulseBtn,
-          label: "Impulsion",
+          label: "Imp.",
         });
       }
       return buttons;
     }
 
-    _ensureShell(grid, titleText) {
+    _ensureShell(titleText) {
+      const compact = this._isCompact();
+      const cols = this._columns();
+
       if (!this._root) {
         this._root = document.createElement("ha-card");
         this.appendChild(this._root);
         this._root.addEventListener("click", this._boundClick);
       }
+
+      this._root.classList.toggle("is-compact", compact);
+      this._root.style.setProperty("--ov-cols", String(cols));
+      this._root.style.setProperty("--ov-cols-md", String(Math.max(cols, 4)));
+      this._root.style.setProperty("--ov-cols-lg", String(Math.max(cols, 4)));
 
       if (!this._built) {
         this._root.innerHTML = "";
@@ -416,7 +493,7 @@
         }
 
         const container = document.createElement("div");
-        container.className = grid ? "ov-grid" : "ov-single";
+        container.className = "ov-grid";
         this._root.appendChild(container);
         this._built = true;
         return container;
@@ -428,10 +505,7 @@
           const t = document.createElement("div");
           t.className = "ov-title";
           t.textContent = titleText;
-          this._root.insertBefore(
-            t,
-            this._root.querySelector(".ov-grid, .ov-single")
-          );
+          this._root.insertBefore(t, this._root.querySelector(".ov-grid"));
         } else if (titleEl.textContent !== titleText) {
           titleEl.textContent = titleText;
         }
@@ -439,22 +513,21 @@
         titleEl.remove();
       }
 
-      const container = this._root.querySelector(".ov-grid, .ov-single");
-      if (container) container.className = grid ? "ov-grid" : "ov-single";
-      return container;
+      return this._root.querySelector(".ov-grid");
     }
 
     _upsertTile(container, entityId, info) {
       let tile = container.querySelector(
         `.ov-tile[data-entity="${CSS.escape(entityId)}"]`
       );
+      const showArea = this._showArea();
 
       if (!info) {
         if (!tile) {
           tile = document.createElement("div");
           tile.className = "ov-tile ov-missing";
           tile.dataset.entity = entityId;
-          tile.innerHTML = `<div class="ov-name"></div><div class="ov-label">Entité introuvable</div>`;
+          tile.innerHTML = `<div class="ov-name"></div><div class="ov-label">Introuvable</div>`;
           container.appendChild(tile);
         }
         tile.querySelector(".ov-name").textContent = entityId;
@@ -478,14 +551,16 @@
 
       tile.className = `ov-tile ${info.isAlert ? "is-alert" : "is-ok"}`;
       tile.querySelector(".ov-name").textContent = info.name;
+
       const areaEl = tile.querySelector(".ov-area");
-      if (info.area) {
+      if (showArea && info.area) {
         areaEl.hidden = false;
         areaEl.textContent = info.area;
       } else {
         areaEl.hidden = true;
         areaEl.textContent = "";
       }
+
       tile.querySelector(".ov-label").textContent = info.label;
 
       const visual = tile.querySelector(".ov-visual");
@@ -544,8 +619,7 @@
       if (!force && sig === this._lastSig && this._built) return;
       this._lastSig = sig;
 
-      const grid = entities.length > 1;
-      const container = this._ensureShell(grid, this._config.title || "");
+      const container = this._ensureShell(this._config.title || "");
 
       const keep = new Set(entities);
       container.querySelectorAll(".ov-tile").forEach((tile) => {
@@ -568,7 +642,7 @@
     type: CARD_TYPE,
     name: "Ouvertures",
     description:
-      "Une ouverture (baie, porte, portail, garage, piscine) avec visuel.",
+      "Grille dense d’ouvertures (baie, porte, portail, garage, piscine).",
     preview: true,
     documentationURL: "https://github.com/nicdive/HA-ouvertures",
   };

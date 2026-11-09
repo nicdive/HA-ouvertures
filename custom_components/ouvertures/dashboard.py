@@ -118,18 +118,28 @@ def _collect_openings(hass: HomeAssistant) -> list[dict[str, str]]:
     return items
 
 
-def _card_for_opening(item: dict[str, str]) -> dict[str, Any]:
-    """Une carte Lovelace = une ouverture."""
-    return {
+def _dense_card(
+    entities: list[str],
+    *,
+    show_area: bool = False,
+    title: str | None = None,
+) -> dict[str, Any]:
+    """Une carte dense : grille interne (3×n sur mobile), une tuile par ouverture."""
+    card: dict[str, Any] = {
         "type": "custom:ouvertures-card",
-        "entity": item["entity_id"],
+        "entities": entities,
+        "compact": True,
+        "show_area": show_area,
+        "columns": 3,
     }
+    if title:
+        card["title"] = title
+    return card
 
 
 def _build_config(items: list[dict[str, str]]) -> dict[str, Any]:
-    """Dashboard organisé par pièce, une carte par ouverture."""
+    """Dashboard par pièce : une carte dense par pièce (tuiles séparées en grille)."""
     sections: list[dict[str, Any]] = []
-    all_entities = [i["entity_id"] for i in items]
 
     if items:
         by_area: dict[str, list[dict[str, str]]] = {}
@@ -137,7 +147,6 @@ def _build_config(items: list[dict[str, str]]) -> dict[str, Any]:
             key = item.get("area") or NO_AREA
             by_area.setdefault(key, []).append(item)
 
-        # Pièces A→Z, « Sans pièce » à la fin
         area_names = sorted(
             by_area.keys(),
             key=lambda a: (a == NO_AREA, a.lower()),
@@ -145,17 +154,23 @@ def _build_config(items: list[dict[str, str]]) -> dict[str, Any]:
 
         for area_name in area_names:
             area_items = by_area[area_name]
-            cards: list[dict[str, Any]] = [
+            sections.append(
                 {
-                    "type": "heading",
-                    "heading": area_name,
-                    "heading_style": "title",
-                    "icon": "mdi:floor-plan",
+                    "type": "grid",
+                    "cards": [
+                        {
+                            "type": "heading",
+                            "heading": area_name,
+                            "heading_style": "title",
+                            "icon": "mdi:floor-plan",
+                        },
+                        _dense_card(
+                            [i["entity_id"] for i in area_items],
+                            show_area=False,
+                        ),
+                    ],
                 }
-            ]
-            for item in area_items:
-                cards.append(_card_for_opening(item))
-            sections.append({"type": "grid", "cards": cards})
+            )
 
     if not sections:
         sections = [
@@ -185,8 +200,12 @@ def _build_config(items: list[dict[str, str]]) -> dict[str, Any]:
         }
     ]
     if items:
-        for item in items:
-            overview_cards.append(_card_for_opening(item))
+        overview_cards.append(
+            _dense_card(
+                [i["entity_id"] for i in items],
+                show_area=True,
+            )
+        )
     else:
         overview_cards.append(
             {
@@ -202,7 +221,8 @@ def _build_config(items: list[dict[str, str]]) -> dict[str, Any]:
                 "path": "ouvertures",
                 "icon": DASHBOARD_ICON,
                 "type": "sections",
-                "max_columns": 3,
+                "max_columns": 4,
+                "dense": True,
                 "sections": sections,
             },
             {
@@ -210,7 +230,8 @@ def _build_config(items: list[dict[str, str]]) -> dict[str, Any]:
                 "path": "apercu",
                 "icon": "mdi:view-grid",
                 "type": "sections",
-                "max_columns": 3,
+                "max_columns": 4,
+                "dense": True,
                 "sections": [
                     {
                         "type": "grid",

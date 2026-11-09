@@ -50,11 +50,17 @@ ha_ce.ConfigEntry = object  # type: ignore[attr-defined]
 dashboard = _load("ouvertures.dashboard", PKG / "dashboard.py")
 
 
-def test_dashboard_groups_by_room_one_card_each():
+def test_dashboard_dense_grid_per_room():
     items = [
         {
             "entity_id": "sensor.baie_salon_etat",
             "name": "Baie Est",
+            "opening_type": const.TYPE_BAIE,
+            "area": "Salon",
+        },
+        {
+            "entity_id": "sensor.baie_salon2_etat",
+            "name": "Baie Sud",
             "opening_type": const.TYPE_BAIE,
             "area": "Salon",
         },
@@ -85,15 +91,28 @@ def test_dashboard_groups_by_room_one_card_each():
     ]
     assert headings == ["Cuisine", "Salon", "Sans pièce"]
 
-    # Une carte par ouverture (pas une grille d'entities)
-    opening_cards = [
+    # Une carte dense par pièce (entities), pas une carte Lovelace par ouverture
+    dense_cards = [
         c
         for s in sections
         for c in s["cards"]
         if c.get("type") == "custom:ouvertures-card"
     ]
-    assert len(opening_cards) == 3
-    assert all("entity" in c and "entities" not in c for c in opening_cards)
+    assert len(dense_cards) == 3
+    salon = next(c for c in dense_cards if len(c.get("entities", [])) == 2)
+    assert salon["compact"] is True
+    assert salon["columns"] == 3
+    assert salon["show_area"] is False
+    assert "entity" not in salon
+
+    overview = cfg["views"][1]
+    ov_card = next(
+        c
+        for c in overview["sections"][0]["cards"]
+        if c.get("type") == "custom:ouvertures-card"
+    )
+    assert len(ov_card["entities"]) == 4
+    assert ov_card["show_area"] is True
 
 
 def test_build_config_empty():
@@ -102,6 +121,6 @@ def test_build_config_empty():
 
 
 if __name__ == "__main__":
-    test_dashboard_groups_by_room_one_card_each()
+    test_dashboard_dense_grid_per_room()
     test_build_config_empty()
     print("OK — tests dashboard config")

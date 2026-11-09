@@ -5,12 +5,19 @@ Toutes les versions notables de **Gestion des ouvertures**.
 Le format s’inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 et le projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [1.1.5] - 2026-11-09
+
+### Changé
+
+- Grille **dense 3×n sur mobile** (4 colonnes tablette/desktop) pour voir beaucoup
+  plus d’ouvertures à l’écran
+- Dashboard : une carte compacte par pièce (chaque ouverture = une petite tuile)
+
 ## [1.1.4] - 2026-11-09
 
 ### Changé
 
-- Tableau de bord : **une carte par ouverture**, organisées **par pièce**
-- La carte elle-même n’impose plus de regroupement (chaque ouverture reste séparée)
+- Tableau de bord organisé **par pièce** (chaque ouverture séparée)
 
 ## [1.1.3] - 2026-11-09
 
@@ -59,6 +66,7 @@ et le projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 - Assets brand (`brand/icon.png`, logo) pour le Marketplace
 - Exemple de tableau de bord (`dashboards/ouvertures.yaml`)
 
+[1.1.5]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.1.5
 [1.1.4]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.1.4
 [1.1.3]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.1.3
 [1.1.2]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.1.2
