@@ -24,7 +24,7 @@ PLATFORMS: list[Platform] = [
 ]
 
 WWW_PATH = Path(__file__).parent / "www"
-CARD_VERSION = "1.1.0"
+CARD_VERSION = "1.1.1"
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:

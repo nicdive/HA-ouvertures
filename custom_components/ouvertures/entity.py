@@ -6,7 +6,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Event, HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.event import async_track_state_change_event
+from homeassistant.helpers.event import async_call_later, async_track_state_change_event
 
 from .const import (
     CONF_CLOSE_ENTITY,
@@ -21,6 +21,9 @@ from .const import (
 )
 from .helpers import resolve_opening
 
+# Ignore les rafales d'updates cover (current_position) → évite le clignotement UI
+_DEBOUNCE_SECONDS = 0.35
+
 
 class OuvertureEntity(Entity):
     """Entité liée à une ouverture configurée."""
@@ -33,6 +36,8 @@ class OuvertureEntity(Entity):
         self._entry = entry
         self._data = {**entry.data, **entry.options}
         self._resolved = resolve_opening(hass, self._data)
+        self._last_published: tuple | None = None
+        self._debounce_unsub = None
         name = self._data[CONF_NAME]
         opening_type = self._data[CONF_OPENING_TYPE]
         meta = OPENING_TYPES[opening_type]
@@ -54,7 +59,27 @@ class OuvertureEntity(Entity):
         self._data = self.entry_data
         self._resolved = resolve_opening(self.hass, self._data)
 
+    def _fingerprint(self) -> tuple:
+        r = self._resolved
+        return (
+            r.get("state"),
+            r.get("image"),
+            r.get("label"),
+            r.get("is_open"),
+            r.get("is_alert"),
+            r.get("shutter_open"),
+        )
+
+    def _publish_if_changed(self) -> None:
+        self.refresh_resolved()
+        fp = self._fingerprint()
+        if fp == self._last_published:
+            return
+        self._last_published = fp
+        self.async_write_ha_state()
+
     async def async_added_to_hass(self) -> None:
+        self._last_published = self._fingerprint()
         tracked = [
             eid
             for eid in (
@@ -68,11 +93,28 @@ class OuvertureEntity(Entity):
         ]
 
         @callback
+        def _flush(_now=None) -> None:
+            self._debounce_unsub = None
+            self._publish_if_changed()
+
+        @callback
         def _on_state_change(_event: Event) -> None:
-            self.refresh_resolved()
-            self.async_write_ha_state()
+            # Debounce : un cover qui remonte la position 10×/s ne doit pas
+            # republier l'état combiné tant que open/closed n'a pas changé.
+            if self._debounce_unsub is not None:
+                self._debounce_unsub()
+            self._debounce_unsub = async_call_later(
+                self.hass, _DEBOUNCE_SECONDS, _flush
+            )
 
         if tracked:
             self.async_on_remove(
                 async_track_state_change_event(self.hass, tracked, _on_state_change)
             )
+
+            def _cancel_debounce() -> None:
+                if self._debounce_unsub is not None:
+                    self._debounce_unsub()
+                    self._debounce_unsub = None
+
+            self.async_on_remove(_cancel_debounce)
