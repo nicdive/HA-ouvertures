@@ -68,6 +68,8 @@ OPENING_TYPES = {
         "label": "Porte-fenêtre 3 battants (haut arrondi + volet roulant)",
         "icon": "mdi:door-sliding-open",
         "needs_shutter": True,
+        # État du volet = entité cover (volet roulant), pas un binary_sensor
+        "shutter_cover_only": True,
         "needs_open": False,
         "needs_close": False,
         "needs_impulse": False,

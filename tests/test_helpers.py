@@ -44,6 +44,22 @@ def test_is_entity_open_cover_position():
     assert helpers.is_entity_open(_state("unknown", current_position=0)) is False
 
 
+def test_cover_entity_prefers_position():
+    """Volet roulant : current_position prime sur l'état textuel."""
+    open_cover = SimpleNamespace(
+        state="open", entity_id="cover.volet_salon", attributes={"current_position": 100}
+    )
+    closed_cover = SimpleNamespace(
+        state="closed", entity_id="cover.volet_salon", attributes={"current_position": 0}
+    )
+    mid = SimpleNamespace(
+        state="open", entity_id="cover.volet_salon", attributes={"current_position": 3}
+    )
+    assert helpers.is_entity_open(open_cover) is True
+    assert helpers.is_entity_open(closed_cover) is False
+    assert helpers.is_entity_open(mid) is False
+
+
 def test_baie_combined_states():
     assert (
         helpers.combined_state(const.TYPE_BAIE, False, True)
@@ -128,6 +144,7 @@ def test_opening_types_include_fenetres():
 def test_porte_fenetre_3_battants():
     assert const.TYPE_PORTE_FENETRE_3 in const.OPENING_TYPES
     assert const.TYPE_PORTE_FENETRE_3 in const.TYPES_WITH_SHUTTERS
+    assert const.OPENING_TYPES[const.TYPE_PORTE_FENETRE_3].get("shutter_cover_only") is True
     assert (
         helpers.combined_state(const.TYPE_PORTE_FENETRE_3, True, False)
         == const.STATE_OUVERTE_VOLETS_FERMES
@@ -146,6 +163,7 @@ def test_porte_fenetre_3_battants():
 if __name__ == "__main__":
     test_is_entity_open_binary()
     test_is_entity_open_cover_position()
+    test_cover_entity_prefers_position()
     test_baie_combined_states()
     test_porte_states()
     test_images_and_labels()

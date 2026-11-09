@@ -15,10 +15,13 @@
         "description": "Configure sensors / controls for “{name}” ({type}).",
         "data": {
           "contact_entity": "Opening sensor",
-          "shutter_entity": "Shutter sensor / cover",
+          "shutter_entity": "Roller shutter (cover) or sensor",
           "open_entity": "Open action",
           "close_entity": "Close action",
           "impulse_entity": "Impulse button"
+        },
+        "data_description": {
+          "shutter_entity": "For a French door: pick the roller shutter cover entity (not a binary sensor)."
         }
       }
     },
@@ -35,11 +38,14 @@
         "title": "Edit entities",
         "data": {
           "contact_entity": "Opening sensor",
-          "shutter_entity": "Shutter sensor / cover",
+          "shutter_entity": "Roller shutter (cover) or sensor",
           "open_entity": "Open action",
           "close_entity": "Close action",
           "impulse_entity": "Impulse button",
           "inverted": "Invert opening sensor"
+        },
+        "data_description": {
+          "shutter_entity": "For a French door: pick the roller shutter cover entity (not a binary sensor)."
         }
       }
     }

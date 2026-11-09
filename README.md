@@ -45,7 +45,7 @@ La carte Lovelace `custom:ouvertures-card` et les images SVG sont enregistrées 
 | **Fenêtre simple + volets** | Oui | Oui | — (4 images d’état) |
 | **Fenêtre double battant** | Oui | — | — |
 | **Fenêtre double + volets** | Oui | Oui | — (4 images d’état) |
-| **Porte-fenêtre 3 battants** | Oui | Oui (volet roulant) | — (haut arrondi, 4 états) |
+| **Porte-fenêtre 3 battants** | Oui | Oui (**cover** volet roulant) | — (haut arrondi, 4 états) |
 | **Porte simple** | Oui | — | — |
 | **Portail coulissant** | Oui | — | Ouvrir · Fermer · Impulsion |
 | **Garage sectionnelle** | Oui | — | Impulsion |
@@ -62,7 +62,8 @@ Chaque ouverture crée :
 1. **Paramètres → Appareils et services → Ajouter une intégration → Gestion des ouvertures**
 2. Choisir le **type** et le **nom**
 3. Sélectionner les entités demandées :
-   - Baie / porte-fenêtre 3 battants / fenêtre + volets : capteur ouverture + capteur/cover volet
+   - Baie / fenêtre + volets : capteur ouverture + capteur/cover volet
+   - Porte-fenêtre 3 battants : capteur ouverture + **entité cover** du volet roulant
    - Fenêtre sans volets / porte / piscine : capteur d’ouverture
    - Portail : capteur + action ouvrir + fermer + impulsion
    - Garage : capteur + bouton impulsionnel

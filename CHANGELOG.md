@@ -5,6 +5,13 @@ Toutes les versions notables de **Gestion des ouvertures**.
 Le format s’inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 et le projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [1.3.1] - 2026-11-09
+
+### Changé
+
+- Porte-fenêtre 3 battants : le volet roulant se lie à une **entité cover** uniquement
+  (état / position du volet, pas un binary_sensor)
+
 ## [1.3.0] - 2026-11-09
 
 ### Ajouté
@@ -86,6 +93,7 @@ et le projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 - Assets brand (`brand/icon.png`, logo) pour le Marketplace
 - Exemple de tableau de bord (`dashboards/ouvertures.yaml`)
 
+[1.3.1]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.3.1
 [1.3.0]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.3.0
 [1.2.1]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.2.1
 [1.2.0]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.2.0

@@ -42,9 +42,19 @@ def _position_open(state: Any) -> bool | None:
 
 
 def is_entity_open(state: Any, inverted: bool = False) -> bool | None:
-    """Retourne True/False/None selon l'état de l'entité."""
+    """Retourne True/False/None selon l'état de l'entité.
+
+    Pour un *cover* (volet roulant), la position ``current_position``
+    est prioritaire (0 = fermé, 100 = ouvert).
+    """
     if state is None or state.state is None:
         return None
+
+    entity_id = str(getattr(state, "entity_id", "") or "")
+    if entity_id.startswith("cover."):
+        pos = _position_open(state)
+        if pos is not None:
+            return (not pos) if inverted else pos
 
     value = str(state.state).lower().strip()
     if value in OPEN_STATES:

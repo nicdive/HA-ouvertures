@@ -37,12 +37,27 @@ SHUTTER_SELECTOR = selector.EntitySelector(
     )
 )
 
+# Volet roulant : uniquement une entité cover (état open/closed / position)
+ROLLER_COVER_SELECTOR = selector.EntitySelector(
+    selector.EntitySelectorConfig(
+        domain=["cover"],
+        multiple=False,
+    )
+)
+
 ACTION_SELECTOR = selector.EntitySelector(
     selector.EntitySelectorConfig(
         domain=["button", "switch", "cover", "script", "input_button", "scene"],
         multiple=False,
     )
 )
+
+
+def _shutter_selector(opening_type: str) -> selector.EntitySelector:
+    meta = OPENING_TYPES[opening_type]
+    if meta.get("shutter_cover_only"):
+        return ROLLER_COVER_SELECTOR
+    return SHUTTER_SELECTOR
 
 
 def _type_schema() -> vol.Schema:
@@ -69,7 +84,7 @@ def _entities_schema(opening_type: str) -> vol.Schema:
         vol.Required(CONF_CONTACT_ENTITY): CONTACT_SELECTOR,
     }
     if meta["needs_shutter"]:
-        fields[vol.Required(CONF_SHUTTER_ENTITY)] = SHUTTER_SELECTOR
+        fields[vol.Required(CONF_SHUTTER_ENTITY)] = _shutter_selector(opening_type)
     if meta["needs_open"]:
         fields[vol.Required(CONF_OPEN_ENTITY)] = ACTION_SELECTOR
     if meta["needs_close"]:
@@ -173,7 +188,7 @@ class OuverturesOptionsFlow(config_entries.OptionsFlow):
                     CONF_SHUTTER_ENTITY,
                     default=current.get(CONF_SHUTTER_ENTITY),
                 )
-            ] = SHUTTER_SELECTOR
+            ] = _shutter_selector(opening_type)
         if meta["needs_open"]:
             fields[
                 vol.Required(

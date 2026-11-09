@@ -15,10 +15,13 @@
         "description": "Configurez les capteurs / commandes pour « {name} » ({type}).",
         "data": {
           "contact_entity": "Capteur d'ouverture",
-          "shutter_entity": "Capteur / cover du volet",
+          "shutter_entity": "Volet roulant (cover) ou capteur",
           "open_entity": "Bouton / action Ouvrir",
           "close_entity": "Bouton / action Fermer",
           "impulse_entity": "Bouton impulsionnel"
+        },
+        "data_description": {
+          "shutter_entity": "Pour une porte-fenêtre : choisissez le cover du volet roulant (pas un capteur)."
         }
       }
     },
@@ -35,11 +38,14 @@
         "title": "Modifier les entités",
         "data": {
           "contact_entity": "Capteur d'ouverture",
-          "shutter_entity": "Capteur / cover du volet",
+          "shutter_entity": "Volet roulant (cover) ou capteur",
           "open_entity": "Bouton / action Ouvrir",
           "close_entity": "Bouton / action Fermer",
           "impulse_entity": "Bouton impulsionnel",
           "inverted": "Inverser le capteur d'ouverture"
+        },
+        "data_description": {
+          "shutter_entity": "Pour une porte-fenêtre : choisissez le cover du volet roulant (pas un capteur)."
         }
       }
     }
