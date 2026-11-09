@@ -1,6 +1,40 @@
-# Gestion des ouvertures (Home Assistant)
+# Gestion des ouvertures
 
 Module Home Assistant pour centraliser baies vitrées, portes, portail coulissant, porte de garage sectionnelle et volet de piscine — avec les visuels inspirés de Jeedom.
+
+![Version](https://img.shields.io/github/v/release/nicdive/HA-ouvertures?style=flat-square)
+![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg?style=flat-square)
+![HA](https://img.shields.io/badge/Home%20Assistant-2024.1%2B-blue.svg?style=flat-square)
+
+<!-- ha-marketplace:exclude-start -->
+
+## Installation
+
+### Marketplace / HACS (recommandé)
+
+[![Ouvrir dans Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=nicdive&repository=HA-ouvertures&category=integration)
+
+1. HACS / Marketplace → menu → **Dépôts personnalisés**
+2. Ajouter `https://github.com/nicdive/HA-ouvertures` en type **Integration**
+3. Rechercher **Gestion des ouvertures** → **Télécharger**
+4. Redémarrer Home Assistant
+5. Paramètres → Appareils et services → **Ajouter une intégration** → *Gestion des ouvertures*
+
+[![Configurer l’intégration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=ouvertures)
+
+> Après publication d’une release GitHub (`1.0.0`, …), le Marketplace propose les mises à jour automatiquement.
+
+Voir aussi [`docs/MARKETPLACE.md`](docs/MARKETPLACE.md) pour la checklist de publication.
+
+### Manuelle
+
+1. Télécharger la [dernière release](https://github.com/nicdive/HA-ouvertures/releases/latest)
+2. Copier `custom_components/ouvertures` dans `config/custom_components/`
+3. Redémarrer Home Assistant
+
+La carte Lovelace `custom:ouvertures-card` et les images SVG sont enregistrées automatiquement (`/ouvertures_static/...`).
+
+<!-- ha-marketplace:exclude-end -->
 
 ## Fonctionnalités
 
@@ -18,22 +52,6 @@ Chaque ouverture crée :
 - un **binary_sensor Ouvert**
 - des **boutons** de commande (portail / garage)
 
-## Installation
-
-### HACS (recommandé)
-
-1. HACS → Intégrations → Menu → *Dépôts personnalisés*
-2. Ajouter l’URL du dépôt en type **Integration**
-3. Installer **Gestion des ouvertures**
-4. Redémarrer Home Assistant
-
-### Manuelle
-
-1. Copier `custom_components/ouvertures` dans votre dossier `config/custom_components/`
-2. Redémarrer Home Assistant
-
-La carte Lovelace `custom:ouvertures-card` et les images SVG sont enregistrées automatiquement (`/ouvertures_static/...`).
-
 ## Configuration
 
 1. **Paramètres → Appareils et services → Ajouter une intégration → Gestion des ouvertures**
@@ -50,16 +68,7 @@ Vous pouvez ajouter **autant d’ouvertures** que nécessaire (une entrée par b
 
 ## Tableau de bord
 
-Exemple prêt à l’emploi : [`dashboards/ouvertures.yaml`](dashboards/ouvertures.yaml).
-
-Carte seule :
-
-```yaml
-type: custom:ouvertures-card
-entity: sensor.baie_salon_etat
-```
-
-Grille (dashboard dédié) :
+Exemple : [`dashboards/ouvertures.yaml`](dashboards/ouvertures.yaml).
 
 ```yaml
 type: custom:ouvertures-card
@@ -72,8 +81,6 @@ entities:
   - sensor.volet_piscine_etat
 ```
 
-Les boutons **Ouvrir / Fermer / Impulsion** apparaissent automatiquement sur portail et garage.
-
 ## Baie vitrée — 4 états
 
 | État | Visuel |
@@ -83,22 +90,23 @@ Les boutons **Ouvrir / Fermer / Impulsion** apparaissent automatiquement sur por
 | Baie fermée · Volets fermés | Lames blanches + cadenas |
 | Baie ouverte · Volets fermés | Alerte « BAIE OUVERTE » |
 
+## Versioning
+
+- Semantic Versioning (`MAJOR.MINOR.PATCH`)
+- La version dans `custom_components/ouvertures/manifest.json` **doit** correspondre au tag de release GitHub (ex. `1.0.0`)
+- Historique : [`CHANGELOG.md`](CHANGELOG.md)
+
 ## Structure
 
 ```
 custom_components/ouvertures/
-  __init__.py          # static + carte Lovelace
-  config_flow.py       # UI de configuration
-  sensor.py            # état combiné
-  binary_sensor.py     # ouvert / fermé
-  button.py            # commandes
-  www/
-    ouvertures-card.js
-    img/               # SVG (baies, portes, portail, garage, piscine)
-dashboards/ouvertures.yaml
+  brand/                 # icônes Marketplace (icon 256 / 512)
+  manifest.json          # version + métadonnées HA
+  www/                   # carte Lovelace + SVG
+hacs.json
+CHANGELOG.md
 ```
 
-## Notes
+## Licence
 
-- Compatible `binary_sensor`, `cover`, `sensor`, `switch`, `button`, `script`…
-- Le message d’origine mentionnait aussi « De plus, il me faudra… » (coupé) : précisez la suite pour l’ajouter (notifications, historique, alarme, etc.).
+Usage personnel / partage via le dépôt GitHub `nicdive/HA-ouvertures`.
