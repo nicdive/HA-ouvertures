@@ -5,6 +5,12 @@ Toutes les versions notables de **Gestion des ouvertures**.
 Le format s’inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 et le projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [1.1.3] - 2026-11-09
+
+### Ajouté
+
+- La carte range automatiquement les tuiles **par pièce** (titres de groupe)
+
 ## [1.1.2] - 2026-11-09
 
 ### Ajouté
@@ -46,6 +52,7 @@ et le projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 - Assets brand (`brand/icon.png`, logo) pour le Marketplace
 - Exemple de tableau de bord (`dashboards/ouvertures.yaml`)
 
+[1.1.3]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.1.3
 [1.1.2]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.1.2
 [1.1.1]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.1.1
 [1.1.0]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.1.0

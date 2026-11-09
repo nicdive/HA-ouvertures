@@ -50,7 +50,7 @@ ha_ce.ConfigEntry = object  # type: ignore[attr-defined]
 dashboard = _load("ouvertures.dashboard", PKG / "dashboard.py")
 
 
-def test_build_config_by_area():
+def test_build_config_has_par_piece_then_types():
     items = [
         {
             "entity_id": "sensor.baie_salon_etat",
@@ -73,34 +73,19 @@ def test_build_config_by_area():
         for c in s["cards"]
         if c.get("type") == "heading"
     ]
-    assert "Salon" in headings
-    assert "Autres" in headings
-
-
-def test_build_config_by_type_without_areas():
-    items = [
-        {
-            "entity_id": "sensor.baie_salon_etat",
-            "name": "Baie Est",
-            "opening_type": const.TYPE_BAIE,
-            "area": "",
-        },
-        {
-            "entity_id": "sensor.portail_etat",
-            "name": "Portail",
-            "opening_type": const.TYPE_PORTAIL,
-            "area": "",
-        },
-    ]
-    cfg = dashboard._build_config(items)
-    headings = [
-        c["heading"]
-        for s in cfg["views"][0]["sections"]
-        for c in s["cards"]
-        if c.get("type") == "heading"
-    ]
+    assert headings[0] == "Par pièce"
     assert "Baie vitrée" in headings
     assert "Portail coulissant" in headings
+    # La carte "Par pièce" contient toutes les entités
+    first_card = next(
+        c
+        for c in cfg["views"][0]["sections"][0]["cards"]
+        if c.get("type") == "custom:ouvertures-card"
+    )
+    assert set(first_card["entities"]) == {
+        "sensor.baie_salon_etat",
+        "sensor.portail_etat",
+    }
 
 
 def test_build_config_empty():
@@ -109,7 +94,6 @@ def test_build_config_empty():
 
 
 if __name__ == "__main__":
-    test_build_config_by_area()
-    test_build_config_by_type_without_areas()
+    test_build_config_has_par_piece_then_types()
     test_build_config_empty()
     print("OK — tests dashboard config")

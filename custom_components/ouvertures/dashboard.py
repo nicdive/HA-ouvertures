@@ -121,59 +121,52 @@ def _build_config(items: list[dict[str, str]]) -> dict[str, Any]:
     """Construit la config Lovelace — sections par pièce si possible."""
     sections: list[dict[str, Any]] = []
     all_entities = [i["entity_id"] for i in items]
-    has_areas = any(i.get("area") for i in items)
 
-    if has_areas:
-        # Une section par pièce (+ « Autres » sans area)
-        by_area: dict[str, list[dict[str, str]]] = {}
-        for item in items:
-            key = item.get("area") or "Autres"
-            by_area.setdefault(key, []).append(item)
-        for area_name, area_items in by_area.items():
-            entities = [i["entity_id"] for i in area_items]
-            sections.append(
-                {
-                    "type": "grid",
-                    "cards": [
-                        {
-                            "type": "heading",
-                            "heading": area_name,
-                            "heading_style": "title",
-                            "icon": "mdi:floor-plan",
-                        },
-                        {
-                            "type": "custom:ouvertures-card",
-                            "entities": entities,
-                        },
-                    ],
-                }
-            )
-    else:
-        # Fallback : sections par type (comme avant)
-        for opening_type in _TYPE_ORDER:
-            type_items = [i for i in items if i["opening_type"] == opening_type]
-            if not type_items:
-                continue
-            entities = [i["entity_id"] for i in type_items]
-            label = OPENING_TYPES[opening_type]["label"]
-            icon = OPENING_TYPES[opening_type]["icon"]
-            sections.append(
-                {
-                    "type": "grid",
-                    "cards": [
-                        {
-                            "type": "heading",
-                            "heading": label,
-                            "heading_style": "title",
-                            "icon": icon,
-                        },
-                        {
-                            "type": "custom:ouvertures-card",
-                            "entities": entities,
-                        },
-                    ],
-                }
-            )
+    # Une seule carte : le widget range lui-même par pièce
+    if all_entities:
+        sections.append(
+            {
+                "type": "grid",
+                "cards": [
+                    {
+                        "type": "heading",
+                        "heading": "Par pièce",
+                        "heading_style": "title",
+                        "icon": "mdi:floor-plan",
+                    },
+                    {
+                        "type": "custom:ouvertures-card",
+                        "entities": all_entities,
+                    },
+                ],
+            }
+        )
+
+    # Sections secondaires par type (baies / portes / …)
+    for opening_type in _TYPE_ORDER:
+        type_items = [i for i in items if i["opening_type"] == opening_type]
+        if not type_items:
+            continue
+        entities = [i["entity_id"] for i in type_items]
+        label = OPENING_TYPES[opening_type]["label"]
+        icon = OPENING_TYPES[opening_type]["icon"]
+        sections.append(
+            {
+                "type": "grid",
+                "cards": [
+                    {
+                        "type": "heading",
+                        "heading": label,
+                        "heading_style": "title",
+                        "icon": icon,
+                    },
+                    {
+                        "type": "custom:ouvertures-card",
+                        "entities": entities,
+                    },
+                ],
+            }
+        )
 
     if not sections:
         sections = [
