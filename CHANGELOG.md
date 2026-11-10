@@ -5,6 +5,13 @@ Toutes les versions notables de **Gestion des ouvertures**.
 Le format s’inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 et le projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [1.3.5] - 2026-11-10
+
+### Changé
+
+- Visuel **volet piscine** : bassin réaliste avec **volet roulant immergé**
+  (banquette + axe, lamelles déployées / enroulées)
+
 ## [1.3.4] - 2026-11-10
 
 ### Corrigé
@@ -116,6 +123,7 @@ et le projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 - Assets brand (`brand/icon.png`, logo) pour le Marketplace
 - Exemple de tableau de bord (`dashboards/ouvertures.yaml`)
 
+[1.3.5]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.3.5
 [1.3.4]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.3.4
 [1.3.3]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.3.3
 [1.3.2]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.3.2
