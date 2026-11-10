@@ -1,0 +1,27 @@
+# =============================================================================
+# Référence — le tableau de bord est créé AUTOMATIQUEMENT par l'intégration
+# -----------------------------------------------------------------------------
+# Dès qu'un ouvrant est ajouté, Home Assistant affiche dans la barre latérale :
+#   Ouvertures  →  /ha-ouvertures
+#
+# Ce fichier reste un exemple / documentation. Vous n'avez rien à coller.
+# =============================================================================
+
+title: Ouvertures
+views:
+  - title: Ouvertures
+    path: ouvertures
+    icon: mdi:door-sliding
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Baie vitrée
+            heading_style: title
+            icon: mdi:door-sliding
+          - type: custom:ouvertures-card
+            title: Baies vitrées
+            entities:
+              - sensor.baie_salon_etat

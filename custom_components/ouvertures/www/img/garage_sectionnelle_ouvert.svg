@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<rect x="70" y="48" width="372" height="400" fill="#e8e4dc"/>
+<rect x="70" y="430" width="372" height="22" fill="#8b5a3c"/>
+<rect x="96" y="72" width="320" height="358" fill="#111"/>
+<rect x="104" y="80" width="304" height="342" fill="#0b1220"/>
+<rect x="104" y="80" width="8" height="342" fill="#334155"/>
+<rect x="400" y="80" width="8" height="342" fill="#334155"/>
+<rect x="114" y="84" width="284" height="22" fill="#2b2f33" stroke="#1a1d20" stroke-width="1"/>
+<rect x="122" y="87" width="80" height="16" rx="1" fill="#1e2226" opacity="0.7"/>
+<rect x="214" y="87" width="80" height="16" rx="1" fill="#1e2226" opacity="0.7"/>
+<rect x="306" y="87" width="80" height="16" rx="1" fill="#1e2226" opacity="0.7"/>
+<rect x="114" y="108" width="284" height="20" fill="#2b2f33" stroke="#1a1d20" stroke-width="1"/>
+<rect x="122" y="111" width="80" height="14" rx="1" fill="#1e2226" opacity="0.7"/>
+<rect x="214" y="111" width="80" height="14" rx="1" fill="#1e2226" opacity="0.7"/>
+<rect x="306" y="111" width="80" height="14" rx="1" fill="#1e2226" opacity="0.7"/>
+<rect x="114" y="130" width="284" height="18" fill="#2b2f33" stroke="#1a1d20" stroke-width="1"/>
+<rect x="122" y="133" width="80" height="12" rx="1" fill="#1e2226" opacity="0.7"/>
+<rect x="214" y="133" width="80" height="12" rx="1" fill="#1e2226" opacity="0.7"/>
+<rect x="306" y="133" width="80" height="12" rx="1" fill="#1e2226" opacity="0.7"/>
+<rect x="114" y="150" width="284" height="16" fill="#2b2f33" stroke="#1a1d20" stroke-width="1"/>
+<rect x="122" y="153" width="80" height="10" rx="1" fill="#1e2226" opacity="0.7"/>
+<rect x="214" y="153" width="80" height="10" rx="1" fill="#1e2226" opacity="0.7"/>
+<rect x="306" y="153" width="80" height="10" rx="1" fill="#1e2226" opacity="0.7"/>
+<rect x="114" y="400" width="284" height="16" fill="#374151"/>
+<rect x="236" y="52" width="40" height="8" rx="2" fill="#9ca3af"/>
+<g transform="translate(256,18)"><circle r="11" fill="#ea580c"/><path d="M0-5v5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cy="5.5" r="1.4" fill="#fff"/></g>
+</svg>

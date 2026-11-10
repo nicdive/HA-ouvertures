@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ouvertures — aperçu des visuels</title>
+  <style>
+    :root {
+      --bg: #eef2ff;
+      --card: rgba(255,255,255,0.85);
+      --ok: #16a34a;
+      --alert: #ea580c;
+      --text: #111827;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      background: linear-gradient(165deg, #f8fafc 0%, #eef2ff 45%, #f1f5f9 100%);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    h1 { margin: 0 0 8px; font-size: 1.6rem; }
+    p.lead { margin: 0 0 24px; color: #4b5563; }
+    section { margin-bottom: 36px; }
+    h2 { font-size: 1.1rem; margin: 0 0 12px; color: #374151; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+    }
+    .tile {
+      background: var(--card);
+      border: 1px solid rgba(148,163,184,0.4);
+      border-radius: 16px;
+      padding: 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+    .tile.alert { border-color: rgba(234,88,12,0.55); background: #fff7ed; }
+    .tile.ok { border-color: rgba(22,163,74,0.35); }
+    .tile img { width: 100%; max-width: 200px; aspect-ratio: 1; object-fit: contain; }
+    .name { font-weight: 700; }
+    .label { font-size: 0.8rem; color: #4b5563; }
+    .controls { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+    .btn {
+      border: 0; border-radius: 10px; padding: 7px 12px;
+      color: #fff; font-weight: 650; font-size: 0.78rem; cursor: pointer;
+    }
+    .btn.open { background: var(--ok); }
+    .btn.close { background: #4b5563; }
+    .btn.impulse { background: var(--alert); }
+  </style>
+</head>
+<body>
+  <h1>Gestion des ouvertures</h1>
+  <p class="lead">Aperçu des visuels du module Home Assistant (style baie Jeedom).</p>
+
+  <section>
+    <h2>Baie vitrée — 4 états</h2>
+    <div class="grid">
+      <div class="tile ok">
+        <div class="name">Baie salon</div>
+        <img src="../custom_components/ouvertures/www/img/baie_fermee_volets_ouverts.svg" alt="" />
+        <div class="label">Baie fermée · Volets ouverts</div>
+      </div>
+      <div class="tile alert">
+        <div class="name">Baie salon</div>
+        <img src="../custom_components/ouvertures/www/img/baie_ouverte_volets_ouverts.svg" alt="" />
+        <div class="label">Baie ouverte · Volets ouverts</div>
+      </div>
+      <div class="tile ok">
+        <div class="name">Baie salon</div>
+        <img src="../custom_components/ouvertures/www/img/baie_fermee_volets_fermes.svg" alt="" />
+        <div class="label">Baie fermée · Volets fermés</div>
+      </div>
+      <div class="tile alert">
+        <div class="name">Baie salon</div>
+        <img src="../custom_components/ouvertures/www/img/baie_ouverte_volets_fermes.svg" alt="" />
+        <div class="label">Baie ouverte · Volets fermés</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Porte · Portail · Garage · Piscine</h2>
+    <div class="grid">
+      <div class="tile ok">
+        <div class="name">Porte d'entrée</div>
+        <img src="../custom_components/ouvertures/www/img/porte_entree_fermee.svg" alt="" />
+        <div class="label">Porte fermée</div>
+      </div>
+      <div class="tile alert">
+        <div class="name">Porte d'entrée</div>
+        <img src="../custom_components/ouvertures/www/img/porte_entree_ouverte.svg" alt="" />
+        <div class="label">Porte ouverte</div>
+      </div>
+      <div class="tile ok">
+        <div class="name">Porte garage simple</div>
+        <img src="../custom_components/ouvertures/www/img/porte_simple_fermee.svg" alt="" />
+        <div class="label">Porte fermée</div>
+      </div>
+      <div class="tile alert">
+        <div class="name">Porte garage simple</div>
+        <img src="../custom_components/ouvertures/www/img/porte_simple_ouverte.svg" alt="" />
+        <div class="label">Porte ouverte</div>
+      </div>
+      <div class="tile ok">
+        <div class="name">Portail</div>
+        <img src="../custom_components/ouvertures/www/img/portail_coulissant_ferme.svg" alt="" />
+        <div class="label">Portail fermé</div>
+        <div class="controls">
+          <button class="btn open">Ouvrir</button>
+          <button class="btn close">Fermer</button>
+          <button class="btn impulse">Impulsion</button>
+        </div>
+      </div>
+      <div class="tile alert">
+        <div class="name">Portail</div>
+        <img src="../custom_components/ouvertures/www/img/portail_coulissant_ouvert.svg" alt="" />
+        <div class="label">Portail ouvert</div>
+        <div class="controls">
+          <button class="btn open">Ouvrir</button>
+          <button class="btn close">Fermer</button>
+          <button class="btn impulse">Impulsion</button>
+        </div>
+      </div>
+      <div class="tile ok">
+        <div class="name">Garage</div>
+        <img src="../custom_components/ouvertures/www/img/garage_sectionnelle_ferme.svg" alt="" />
+        <div class="label">Garage fermé</div>
+        <div class="controls"><button class="btn impulse">Impulsion</button></div>
+      </div>
+      <div class="tile alert">
+        <div class="name">Garage</div>
+        <img src="../custom_components/ouvertures/www/img/garage_sectionnelle_ouvert.svg" alt="" />
+        <div class="label">Garage ouvert</div>
+        <div class="controls"><button class="btn impulse">Impulsion</button></div>
+      </div>
+      <div class="tile ok">
+        <div class="name">Piscine</div>
+        <img src="../custom_components/ouvertures/www/img/piscine_fermee.svg" alt="" />
+        <div class="label">Volet fermé</div>
+      </div>
+      <div class="tile alert">
+        <div class="name">Piscine</div>
+        <img src="../custom_components/ouvertures/www/img/piscine_ouverte.svg" alt="" />
+        <div class="label">Volet ouvert</div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

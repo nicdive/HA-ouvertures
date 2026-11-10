@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<rect x="100" y="48" width="312" height="400" fill="#e8e4dc"/>
+<rect x="118" y="66" width="276" height="366" fill="#d4cfc4"/>
+<rect x="140" y="86" width="232" height="330" fill="#111"/>
+<rect x="148" y="94" width="216" height="314" fill="#0b1220"/>
+<rect x="148" y="94" width="12" height="314" fill="#1a1d20"/>
+<polygon points="148,100 40,78 40,430 148,408" fill="#0a0a0a"/>
+<polygon points="148,102 52,86 52,416 148,404" fill="#2b2f33" stroke="#1a1d20" stroke-width="2"/>
+<path d="M68,110 L68,200 Q68,95 100,95 Q132,95 132,200 L132,210 L68,210 Z" fill="#1e2226" opacity="0.85"/>
+<rect x="68" y="230" width="64" height="40" rx="1" fill="#1e2226" opacity="0.8"/>
+<rect x="68" y="290" width="64" height="50" rx="1" fill="#1e2226" opacity="0.8"/>
+<rect x="60" y="250" width="5" height="22" rx="1" fill="#0a0a0a"/>
+<rect x="118" y="416" width="276" height="24" fill="#cbb99a"/>
+<g transform="translate(256,18)"><circle r="11" fill="#ea580c"/><path d="M0-5v5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cy="5.5" r="1.4" fill="#fff"/></g>
+</svg>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<path d="M96.0,428 L96.0,192.0 A160.0,160.0 0 0 1 416.0,192.0 L416.0,428 Z" fill="#c4b8a8"/>
+<path d="M106.0,424 L106.0,198.0 A150.0,150.0 0 0 1 406.0,198.0 L406.0,424 Z" fill="#a89888" opacity="0.5"/>
+<path d="M124.0,420 L124.0,204.0 A132.0,132.0 0 0 1 388.0,204.0 L388.0,420 Z" fill="#0b1220"/>
+<path d="M138.0,416 L138.0,200 A120.0,120.0 0 0 1 211.36,88.61207246743479 L211.36,416 Z" fill="#2b2f33"/>
+<rect x="148.0" y="180" width="55.360000000000014" height="100" rx="2" fill="#7a9bb5" stroke="#c0c5cb" stroke-width="2" opacity="0.9"/>
+<rect x="148.0" y="310" width="55.360000000000014" height="90" rx="2" fill="#1e2226" stroke="#555b63" stroke-width="1.5"/>
+<polygon points="211.36,106.0 411.36,86.0 421.36,420 211.36,416" fill="#111"/>
+<polygon points="211.36,108.0 396.36,94.0 403.36,408 211.36,412" fill="#2b2f33" stroke="#1a1d20" stroke-width="2"/>
+<polygon points="231.36,160 361.36,145 366.36,220 236.36,230" fill="#1e2226" opacity="0.9"/>
+<rect x="132.0" y="416" width="248.0" height="16" fill="#d6d0c4"/>
+<rect x="239.36" y="275" width="22" height="5" rx="2" fill="#c0c5cb"/>
+<g transform="translate(256,18)"><circle r="11" fill="#ea580c"/><path d="M0-5v5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cy="5.5" r="1.4" fill="#fff"/></g>
+</svg>
