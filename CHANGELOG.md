@@ -1,3 +1,10 @@
+## [1.5.1] - 2026-11-10
+
+### Changé
+
+- **Porte d'entrée** : vraie arche semi-circulaire en haut
+- **Portail coulissant** : beaucoup plus large, haut nettement ajouré (barreaudage)
+
 ## [1.5.0] - 2026-11-10
 
 ### Ajouté

@@ -166,7 +166,7 @@ CLOSED_STATES = frozenset(
 STATIC_URL_PATH = f"/{DOMAIN}_static"
 CARD_FILENAME = "ouvertures-card.js"
 # Incrémenter pour forcer le rechargement des SVG / JS côté navigateur
-ASSETS_VERSION = "1.5.0"
+ASSETS_VERSION = "1.5.1"
 
 ATTR_OPENING_TYPE = "opening_type"
 ATTR_CONTACT_ENTITY = "contact_entity"
