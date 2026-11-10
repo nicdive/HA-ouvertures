@@ -19,6 +19,7 @@ TYPE_FENETRE_DOUBLE = "fenetre_double"
 TYPE_FENETRE_DOUBLE_VOLETS = "fenetre_double_volets"
 TYPE_PORTE_FENETRE_3 = "porte_fenetre_3_battants"
 TYPE_PORTE = "porte"
+TYPE_PORTE_ENTREE = "porte_entree"
 TYPE_PORTAIL = "portail_coulissant"
 TYPE_GARAGE = "garage_sectionnelle"
 TYPE_PISCINE = "piscine_volet"
@@ -75,7 +76,15 @@ OPENING_TYPES = {
         "needs_impulse": False,
     },
     TYPE_PORTE: {
-        "label": "Porte simple",
+        "label": "Porte garage simple",
+        "icon": "mdi:door",
+        "needs_shutter": False,
+        "needs_open": False,
+        "needs_close": False,
+        "needs_impulse": False,
+    },
+    TYPE_PORTE_ENTREE: {
+        "label": "Porte d'entrée",
         "icon": "mdi:door",
         "needs_shutter": False,
         "needs_open": False,
@@ -157,7 +166,7 @@ CLOSED_STATES = frozenset(
 STATIC_URL_PATH = f"/{DOMAIN}_static"
 CARD_FILENAME = "ouvertures-card.js"
 # Incrémenter pour forcer le rechargement des SVG / JS côté navigateur
-ASSETS_VERSION = "1.4.1"
+ASSETS_VERSION = "1.5.0"
 
 ATTR_OPENING_TYPE = "opening_type"
 ATTR_CONTACT_ENTITY = "contact_entity"

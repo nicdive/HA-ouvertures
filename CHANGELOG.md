@@ -1,3 +1,15 @@
+## [1.5.0] - 2026-11-10
+
+### Ajouté
+
+- Type **Porte d'entrée** (arche pierre, battant asymétrique + vitre latérale)
+
+### Changé
+
+- Vignettes réalistes d’après photos : **portail coulissant**, **garage sectionnelle**
+  (anthracite 3×4), **porte d'entrée**, **porte garage simple** (2 arcs + 2 panneaux)
+- Libellé « Porte simple » → **Porte garage simple**
+
 ## 1.4.1
 
 - Porte simple ouverte : battant charnière gauche, sans flèche/texte

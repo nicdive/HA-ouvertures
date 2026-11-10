@@ -23,6 +23,7 @@ from .const import (
     TYPE_PISCINE,
     TYPE_PORTAIL,
     TYPE_PORTE,
+    TYPE_PORTE_ENTREE,
     TYPE_PORTE_FENETRE_3,
     TYPES_WITH_SHUTTERS,
 )
@@ -180,6 +181,10 @@ def image_for_state(opening_type: str, state: str) -> str:
             STATE_FERME: "porte_simple_fermee.svg",
             STATE_OUVERT: "porte_simple_ouverte.svg",
         },
+        TYPE_PORTE_ENTREE: {
+            STATE_FERME: "porte_entree_fermee.svg",
+            STATE_OUVERT: "porte_entree_ouverte.svg",
+        },
         TYPE_PORTAIL: {
             STATE_FERME: "portail_coulissant_ferme.svg",
             STATE_OUVERT: "portail_coulissant_ouvert.svg",
@@ -209,7 +214,7 @@ def _noun(opening_type: str) -> str:
         TYPE_FENETRE_DOUBLE_VOLETS,
     ):
         return "Fenêtre"
-    if opening_type == TYPE_PORTE:
+    if opening_type in (TYPE_PORTE, TYPE_PORTE_ENTREE):
         return "Porte"
     if opening_type == TYPE_PORTAIL:
         return "Portail"
@@ -244,7 +249,7 @@ def human_label(opening_type: str, state: str) -> str:
             return "Garage fermé"
         if opening_type == TYPE_PISCINE:
             return "Volet fermé"
-        if opening_type == TYPE_PORTE:
+        if opening_type in (TYPE_PORTE, TYPE_PORTE_ENTREE):
             return "Porte fermée"
         return f"{noun} fermée"
     if state == STATE_OUVERT:
@@ -254,7 +259,7 @@ def human_label(opening_type: str, state: str) -> str:
             return "Garage ouvert"
         if opening_type == TYPE_PISCINE:
             return "Volet ouvert"
-        if opening_type == TYPE_PORTE:
+        if opening_type in (TYPE_PORTE, TYPE_PORTE_ENTREE):
             return "Porte ouverte"
         return f"{noun} ouverte"
     if state == STATE_INCONNU:

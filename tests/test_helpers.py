@@ -194,6 +194,34 @@ def test_porte_fenetre_3_battants():
     assert "Volet ouvert" in label
 
 
+def test_porte_entree_and_realistic_images():
+    assert const.TYPE_PORTE_ENTREE in const.OPENING_TYPES
+    assert const.OPENING_TYPES[const.TYPE_PORTE]["label"] == "Porte garage simple"
+    assert const.OPENING_TYPES[const.TYPE_PORTE_ENTREE]["label"] == "Porte d'entrée"
+    assert (
+        helpers.image_for_state(const.TYPE_PORTE_ENTREE, const.STATE_FERME)
+        == "porte_entree_fermee.svg"
+    )
+    assert (
+        helpers.image_for_state(const.TYPE_PORTE_ENTREE, const.STATE_OUVERT)
+        == "porte_entree_ouverte.svg"
+    )
+    assert (
+        helpers.image_for_state(const.TYPE_PORTE, const.STATE_FERME)
+        == "porte_simple_fermee.svg"
+    )
+    assert (
+        helpers.image_for_state(const.TYPE_PORTAIL, const.STATE_FERME)
+        == "portail_coulissant_ferme.svg"
+    )
+    assert (
+        helpers.image_for_state(const.TYPE_GARAGE, const.STATE_FERME)
+        == "garage_sectionnelle_ferme.svg"
+    )
+    assert helpers.human_label(const.TYPE_PORTE_ENTREE, const.STATE_OUVERT) == "Porte ouverte"
+    assert helpers.is_alert(const.TYPE_PORTE_ENTREE, const.STATE_OUVERT) is True
+
+
 if __name__ == "__main__":
     test_is_entity_open_binary()
     test_binary_zero_one_default_and_inverted()
@@ -207,4 +235,5 @@ if __name__ == "__main__":
     test_fenetre_double_avec_volets()
     test_opening_types_include_fenetres()
     test_porte_fenetre_3_battants()
+    test_porte_entree_and_realistic_images()
     print("OK — tous les tests helpers passent")

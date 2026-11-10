@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<path d="M90,430 L90,210 Q90,70 256,55 Q422,70 422,210 L422,430 Z" fill="#c4b8a8"/>
+<path d="M108,420 L108,215 Q108,95 256,82 Q404,95 404,215 L404,420 Z" fill="#a89888" opacity="0.55"/>
+<path d="M128,412 L128,220 Q128,110 256,98 Q384,110 384,220 L384,412 Z" fill="#0b1220"/>
+<path d="M136,408 L136,222 Q136,130 198,118 L210,118 L210,408 Z" fill="#2b2f33"/>
+<rect x="148" y="150" width="50" height="110" rx="2" fill="#7a9bb5" stroke="#c0c5cb" stroke-width="2" opacity="0.85"/>
+<rect x="148" y="280" width="50" height="100" rx="2" fill="#1e2226" stroke="#555b63" stroke-width="1.5"/>
+<polygon points="210,120 390,95 400,415 210,408" fill="#111"/>
+<polygon points="210,122 378,105 386,400 210,404" fill="#2b2f33" stroke="#1a1d20" stroke-width="2"/>
+<polygon points="230,145 350,130 352,195 232,205" fill="#1e2226" opacity="0.9"/>
+<polygon points="232,220 300,215 302,285 234,288" fill="#1e2226" opacity="0.85"/>
+<polygon points="308,218 352,212 354,282 310,285" fill="#1e2226" opacity="0.85"/>
+<rect x="128" y="408" width="256" height="18" fill="#d6d0c4"/>
+<rect x="242" y="265" width="22" height="5" rx="2" fill="#c0c5cb"/>
+<g transform="translate(256,18)"><circle r="11" fill="#ea580c"/><path d="M0-5v5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cy="5.5" r="1.4" fill="#fff"/></g>
+</svg>
