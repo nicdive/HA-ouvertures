@@ -1,3 +1,8 @@
+## 1.4.1
+
+- Porte simple ouverte : battant charnière gauche, sans flèche/texte
+- Garage sectionnelle ouverte : panneaux pleine largeur empilés en haut
+
 # Changelog
 
 Toutes les versions notables de **Gestion des ouvertures**.

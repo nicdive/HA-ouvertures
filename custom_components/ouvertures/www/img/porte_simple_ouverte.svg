@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-<rect x="120" y="428" width="272" height="16" rx="3" fill="#6b7280"/>
-<rect x="148" y="64" width="216" height="364" rx="6" fill="#374151"/>
-<rect x="160" y="76" width="192" height="340" fill="#0f172a"/>
-<path d="M168 400h176l-12 14H180z" fill="#4b5563"/>
-<rect x="160" y="76" width="12" height="340" fill="#1f2937"/>
-<polygon points="352,84 460,70 460,420 352,408" fill="#57534e"/>
-<polygon points="356,92 448,80 448,408 356,400" fill="#d6d3d1" stroke="#78716c" stroke-width="2"/>
-<rect x="368" y="110" width="68" height="100" rx="2" fill="#a8a29e" fill-opacity="0.35"/>
-<rect x="368" y="260" width="68" height="100" rx="2" fill="#a8a29e" fill-opacity="0.25"/>
-<circle cx="430" cy="245" r="7" fill="#1f2937"/>
-<circle cx="430" cy="245" r="3" fill="#9ca3af"/>
-<circle cx="256" cy="22" r="12" fill="#ea580c"/><path d="M256 16v6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="256" cy="27" r="1.5" fill="#fff"/>
+<rect x="120" y="428" width="272" height="16" rx="3" fill="#6b7280"/><rect x="148" y="64" width="216" height="364" rx="6" fill="#374151"/><rect x="160" y="76" width="192" height="340" fill="#0f172a"/><path d="M168 400h176l-12 14H180z" fill="#4b5563"/><rect x="160" y="76" width="14" height="340" fill="#1f2937"/><polygon points="160,84 52,68 52,424 160,408" fill="#57534e"/><polygon points="156,92 64,80 64,412 156,400" fill="#d6d3d1" stroke="#78716c" stroke-width="2"/><rect x="76" y="110" width="68" height="100" rx="2" fill="#a8a29e" fill-opacity="0.35"/><rect x="76" y="260" width="68" height="100" rx="2" fill="#a8a29e" fill-opacity="0.25"/><circle cx="82" cy="245" r="7" fill="#1f2937"/><circle cx="82" cy="245" r="3" fill="#9ca3af"/><circle cx="256" cy="22" r="12" fill="#ea580c"/><path d="M256 16v6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="256" cy="27" r="1.5" fill="#fff"/>
 </svg>
