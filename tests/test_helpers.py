@@ -53,6 +53,26 @@ def test_binary_zero_one_default_and_inverted():
     assert helpers.is_entity_open(_state(1), inverted=True) is False
 
 
+def test_numeric_sensor_zero_dot_zero():
+    """Sensors xPL / remote HA : état '0.0' / '1.0' (pas on/off)."""
+    # Sans invert : 0.0 = fermé, 1.0 = ouvert
+    assert helpers.is_entity_open(_state("0.0")) is False
+    assert helpers.is_entity_open(_state("1.0")) is True
+    # Volet piscine utilisateur : 0.0 = ouvert → inverted
+    assert helpers.is_entity_open(_state("0.0"), inverted=True) is True
+    assert helpers.is_entity_open(_state("1.0"), inverted=True) is False
+    assert helpers.is_entity_open(_state(0.0), inverted=True) is True
+    assert helpers.is_entity_open(_state(1.0), inverted=True) is False
+    # Combiné piscine
+    assert (
+        helpers.combined_state(
+            const.TYPE_PISCINE,
+            helpers.is_entity_open(_state("0.0"), inverted=True),
+        )
+        == const.STATE_OUVERT
+    )
+
+
 def test_is_entity_open_cover_position():
     assert helpers.is_entity_open(_state("unknown", current_position=80)) is True
     assert helpers.is_entity_open(_state("unknown", current_position=0)) is False
@@ -177,6 +197,7 @@ def test_porte_fenetre_3_battants():
 if __name__ == "__main__":
     test_is_entity_open_binary()
     test_binary_zero_one_default_and_inverted()
+    test_numeric_sensor_zero_dot_zero()
     test_is_entity_open_cover_position()
     test_cover_entity_prefers_position()
     test_baie_combined_states()

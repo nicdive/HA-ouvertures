@@ -134,6 +134,8 @@ OPEN_STATES = frozenset(
         "unlocked",
         "true",
         "1",
+        "ouvert",
+        "ouverte",
     }
 )
 
@@ -145,6 +147,10 @@ CLOSED_STATES = frozenset(
         "locked",
         "false",
         "0",
+        "ferme",
+        "fermee",
+        "fermé",
+        "fermée",
     }
 )
 

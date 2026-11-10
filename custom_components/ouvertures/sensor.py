@@ -73,6 +73,9 @@ class OuvertureStateSensor(OuvertureEntity, SensorEntity):
             "friendly_state": r["label"],
             "name": self.entry_data[CONF_NAME],
             "type_label": OPENING_TYPES[self.entry_data[CONF_OPENING_TYPE]]["label"],
+            # Debug capteur distant / numérique (ex. sensor xPL en 0.0 / 1.0)
+            "contact_raw_state": r.get("contact_raw_state"),
+            "contact_inverted": r.get("contact_inverted"),
         }
 
     @property

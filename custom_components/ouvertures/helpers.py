@@ -42,20 +42,34 @@ def _position_open(state: Any) -> bool | None:
 
 
 def _normalize_state_value(raw: Any) -> str:
-    """Normalise on/off, 0/1, true/false (str ou nombre)."""
+    """Normalise on/off, 0/1, true/false (str ou nombre).
+
+    Gère aussi les sensors numériques type xPL / remote HA qui
+    exposent ``0.0`` / ``1.0`` (et non ``on`` / ``off``).
+    """
     if raw is None:
         return ""
     if isinstance(raw, bool):
         return "on" if raw else "off"
-    if isinstance(raw, (int, float)):
-        # 1 / 1.0 → "1" ; 0 / 0.0 → "0"
-        return "1" if float(raw) != 0 else "0"
-    value = str(raw).lower().strip()
-    # "1.0", "0.0" venant de certains sensors
+
+    # Nombre natif
+    if isinstance(raw, (int, float)) and not isinstance(raw, bool):
+        return "0" if abs(float(raw)) < 1e-9 else "1"
+
+    value = str(raw).lower().strip().replace(",", ".")
+    # Accents / libellés FR éventuels
+    if value in {"ouvert", "ouverte", "ouverts", "ouvertes"}:
+        return "open"
+    if value in {"ferme", "fermé", "fermee", "fermée", "fermes", "fermés"}:
+        return "closed"
+
+    # "0", "0.0", "1", "1.0" (sensors numériques)
     try:
         as_float = float(value)
-        if as_float in (0.0, 1.0):
-            return "1" if as_float == 1.0 else "0"
+        if abs(as_float) < 1e-9:
+            return "0"
+        if abs(as_float - 1.0) < 1e-9:
+            return "1"
     except ValueError:
         pass
     return value
@@ -353,6 +367,10 @@ def resolve_opening(
         ],
     )
 
+    contact_raw = None
+    if contact_state is not None:
+        contact_raw = getattr(contact_state, "state", None)
+
     return {
         "state": state,
         "label": human_label(opening_type, state),
@@ -362,6 +380,8 @@ def resolve_opening(
         "image": f"{STATIC_URL_PATH}/img/{image}",
         "image_file": image,
         "contact_entity": contact_id,
+        "contact_raw_state": contact_raw,
+        "contact_inverted": inverted,
         "shutter_entity": shutter_id,
         "open_entity": data.get(CONF_OPEN_ENTITY),
         "close_entity": data.get(CONF_CLOSE_ENTITY),

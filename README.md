@@ -68,9 +68,11 @@ Chaque ouverture crée :
    - Portail : capteur + action ouvrir + fermer + impulsion
    - Garage : capteur + bouton impulsionnel
 
-Les **binary_sensor** sont supportés. Convention par défaut : `on` / `1` = ouvert, `off` / `0` = fermé.
+Les **binary_sensor** et les **sensor** numériques (`0` / `1` ou `0.0` / `1.0`, typiques xPL / remote HA) sont supportés.
 
-Si ton contact est inversé (**0 = ouvert**, **1 = fermé**), coche **Inverser le capteur** à la config (ou dans les options de l’entrée).
+Convention par défaut : `on` / `1` / `1.0` = ouvert, `off` / `0` / `0.0` = fermé.
+
+Si ton contact est inversé (**0 / 0.0 = ouvert**, **1 / 1.0 = fermé**), coche **Inverser le capteur** à la config (ou dans les options de l’entrée).
 
 Vous pouvez ajouter **autant d’ouvertures** que nécessaire (une entrée par baie / porte / …).
 

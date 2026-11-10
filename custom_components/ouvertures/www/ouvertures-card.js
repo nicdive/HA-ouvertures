@@ -3,7 +3,7 @@
  * Organisation par pièce = dashboard ; chaque ouverture = une tuile.
  */
 (() => {
-  const CARD_VERSION = "1.3.3";
+  const CARD_VERSION = "1.3.4";
   const CARD_TYPE = "ouvertures-card";
 
   const OPEN_TYPES_WITH_CONTROLS = new Set([
