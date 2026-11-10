@@ -177,16 +177,16 @@ def image_for_state(opening_type: str, state: str) -> str:
             STATE_OUVERT: "porte_fenetre_3_ouverte_volet_ouvert.svg",
         },
         TYPE_PORTE: {
-            STATE_FERME: "porte_fermee.svg",
-            STATE_OUVERT: "porte_ouverte.svg",
+            STATE_FERME: "porte_simple_fermee.svg",
+            STATE_OUVERT: "porte_simple_ouverte.svg",
         },
         TYPE_PORTAIL: {
             STATE_FERME: "portail_coulissant_ferme.svg",
             STATE_OUVERT: "portail_coulissant_ouvert.svg",
         },
         TYPE_GARAGE: {
-            STATE_FERME: "garage_ferme.svg",
-            STATE_OUVERT: "garage_ouvert.svg",
+            STATE_FERME: "garage_sectionnelle_ferme.svg",
+            STATE_OUVERT: "garage_sectionnelle_ouvert.svg",
         },
         TYPE_PISCINE: {
             STATE_FERME: "piscine_fermee.svg",

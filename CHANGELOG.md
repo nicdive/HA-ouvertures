@@ -5,6 +5,20 @@ Toutes les versions notables de **Gestion des ouvertures**.
 Le format s’inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 et le projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [1.4.0] - 2026-11-10
+
+### Changé
+
+- Visuel **porte simple** ouverte : battant sur charnière, sans flèche / bandeau texte
+- Visuel **garage sectionnelle** : fermée pleine ; ouverte = panneaux au plafond dans
+  l’ouverture (plus de pyramide bizarre)
+
+## [1.3.9] - 2026-11-10
+
+### Changé
+
+- (remplacé en 1.4.0) essai visuel garage sectionnelle
+
 ## [1.3.8] - 2026-11-10
 
 ### Changé
@@ -143,6 +157,8 @@ et le projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 - Assets brand (`brand/icon.png`, logo) pour le Marketplace
 - Exemple de tableau de bord (`dashboards/ouvertures.yaml`)
 
+[1.4.0]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.4.0
+[1.3.9]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.3.9
 [1.3.8]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.3.8
 [1.3.7]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.3.7
 [1.3.6]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.3.6
