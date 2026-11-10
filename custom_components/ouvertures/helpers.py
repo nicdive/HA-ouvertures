@@ -181,8 +181,8 @@ def image_for_state(opening_type: str, state: str) -> str:
             STATE_OUVERT: "porte_ouverte.svg",
         },
         TYPE_PORTAIL: {
-            STATE_FERME: "portail_ferme.svg",
-            STATE_OUVERT: "portail_ouvert.svg",
+            STATE_FERME: "portail_coulissant_ferme.svg",
+            STATE_OUVERT: "portail_coulissant_ouvert.svg",
         },
         TYPE_GARAGE: {
             STATE_FERME: "garage_ferme.svg",
@@ -336,6 +336,7 @@ def resolve_opening(
         CONF_OPEN_ENTITY,
         CONF_OPENING_TYPE,
         CONF_SHUTTER_ENTITY,
+        ASSETS_VERSION,
         STATIC_URL_PATH,
     )
 
@@ -377,7 +378,7 @@ def resolve_opening(
         "is_open": bool(contact_open) if contact_open is not None else False,
         "is_alert": is_alert(opening_type, state),
         "shutter_open": shutter_open,
-        "image": f"{STATIC_URL_PATH}/img/{image}",
+        "image": f"{STATIC_URL_PATH}/img/{image}?v={ASSETS_VERSION}",
         "image_file": image,
         "contact_entity": contact_id,
         "contact_raw_state": contact_raw,

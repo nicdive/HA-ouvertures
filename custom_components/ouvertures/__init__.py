@@ -12,7 +12,7 @@ from homeassistant.const import EVENT_HOMEASSISTANT_STARTED, Platform
 from homeassistant.core import Event, HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 
-from .const import CARD_FILENAME, DOMAIN, STATIC_URL_PATH
+from .const import ASSETS_VERSION, CARD_FILENAME, DOMAIN, STATIC_URL_PATH
 from .dashboard import async_setup_dashboard_hooks, schedule_dashboard_update
 
 _LOGGER = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ PLATFORMS: list[Platform] = [
 ]
 
 WWW_PATH = Path(__file__).parent / "www"
-CARD_VERSION = "1.3.6"
+CARD_VERSION = ASSETS_VERSION
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
