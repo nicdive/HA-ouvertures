@@ -5,6 +5,12 @@ Toutes les versions notables de **Gestion des ouvertures**.
 Le format s’inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 et le projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [1.3.8] - 2026-11-10
+
+### Changé
+
+- Boutons **Ouvrir / Fermer / Impulsion** nettement plus gros (surtout iPhone)
+
 ## [1.3.7] - 2026-11-10
 
 ### Corrigé
@@ -137,6 +143,7 @@ et le projet suit le [Semantic Versioning](https://semver.org/lang/fr/).
 - Assets brand (`brand/icon.png`, logo) pour le Marketplace
 - Exemple de tableau de bord (`dashboards/ouvertures.yaml`)
 
+[1.3.8]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.3.8
 [1.3.7]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.3.7
 [1.3.6]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.3.6
 [1.3.5]: https://github.com/nicdive/HA-ouvertures/releases/tag/1.3.5

@@ -3,7 +3,7 @@
  * Organisation par pièce = dashboard ; chaque ouverture = une tuile.
  */
 (() => {
-  const CARD_VERSION = "1.3.7";
+  const CARD_VERSION = "1.3.8";
   const CARD_TYPE = "ouvertures-card";
 
   const OPEN_TYPES_WITH_CONTROLS = new Set([
@@ -124,25 +124,31 @@
     .ov-controls {
       display: flex;
       flex-wrap: wrap;
-      gap: 3px;
-      justify-content: center;
+      gap: 6px;
+      justify-content: stretch;
       width: 100%;
+      margin-top: 4px;
     }
     .ov-btn {
       border: 0;
-      border-radius: 7px;
-      padding: 4px 6px;
-      font-size: 0.58rem;
-      font-weight: 650;
+      border-radius: 10px;
+      padding: 10px 8px;
+      min-height: 40px;
+      flex: 1 1 0;
+      font-size: 0.78rem;
+      font-weight: 700;
       cursor: pointer;
       color: #fff;
       background: #374151;
-      line-height: 1.1;
+      line-height: 1.15;
+      letter-spacing: 0.01em;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
-    .ov-btn:active { transform: scale(0.97); }
+    .ov-btn:active { transform: scale(0.97); filter: brightness(0.95); }
     .ov-btn.ov-open { background: #16a34a; }
     .ov-btn.ov-close { background: #4b5563; }
-    .ov-btn.ov-impulse { background: #ea580c; }
+    .ov-btn.ov-impulse { background: #ea580c; flex: 1 1 100%; }
     .ov-missing {
       min-height: 90px;
       justify-content: center;
@@ -150,9 +156,16 @@
     }
     .ov-hint { color: #6b7280; font-size: 0.85rem; padding: 4px; }
 
-    /* Téléphone large / phablet : toujours 3 colonnes en compact */
+    /* Téléphone : boutons encore plus gros (zone tactile) */
     @media (max-width: 430px) {
       ha-card.is-compact { --ov-img: 72px; --ov-pad: 5px; --ov-gap: 4px; }
+      .ov-controls { gap: 5px; }
+      .ov-btn {
+        padding: 11px 6px;
+        min-height: 44px;
+        font-size: 0.8rem;
+        border-radius: 11px;
+      }
     }
     /* Tablette / desktop : 4 colonnes */
     @media (min-width: 700px) {
@@ -450,15 +463,15 @@
 
       const buttons = [];
       if (info.openingType === "portail_coulissant") {
-        if (openBtn) buttons.push({ cls: "ov-open", id: openBtn, label: "Ouv." });
+        if (openBtn) buttons.push({ cls: "ov-open", id: openBtn, label: "Ouvrir" });
         if (closeBtn)
-          buttons.push({ cls: "ov-close", id: closeBtn, label: "Ferm." });
+          buttons.push({ cls: "ov-close", id: closeBtn, label: "Fermer" });
       }
       if (impulseBtn) {
         buttons.push({
           cls: "ov-impulse",
           id: impulseBtn,
-          label: "Imp.",
+          label: "Impulsion",
         });
       }
       return buttons;
