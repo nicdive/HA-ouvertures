@@ -7,7 +7,7 @@
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/nicdive/HA-ouvertures/issues",
   "requirements": [],
-  "version": "1.3.2",
+  "version": "1.3.3",
   "categories": ["sensors.door_window", "blinds_curtains"],
   "dependencies": ["http", "frontend", "lovelace", "websocket_api"],
   "after_dependencies": ["lovelace"]

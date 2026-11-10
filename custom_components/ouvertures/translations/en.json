@@ -7,20 +7,24 @@
         "data": {
           "name": "Name",
           "opening_type": "Type",
-          "inverted": "Invert opening sensor"
+          "inverted": "Invert sensor (0/off = open, 1/on = closed)"
+        },
+        "data_description": {
+          "inverted": "Enable if your binary_sensor reports 0/off when open (and 1/on when closed)."
         }
       },
       "entities": {
         "title": "Linked entities",
         "description": "Configure sensors / controls for “{name}” ({type}).",
         "data": {
-          "contact_entity": "Opening sensor",
+          "contact_entity": "Opening sensor (binary_sensor or other)",
           "shutter_entity": "Roller shutter (cover) or sensor",
           "open_entity": "Open action",
           "close_entity": "Close action",
           "impulse_entity": "Impulse button"
         },
         "data_description": {
+          "contact_entity": "Binary_sensor, sensor, etc. Default: on/1 = open, off/0 = closed.",
           "shutter_entity": "For a French door: pick the roller shutter cover entity (not a binary sensor)."
         }
       }
@@ -37,14 +41,16 @@
       "init": {
         "title": "Edit entities",
         "data": {
-          "contact_entity": "Opening sensor",
+          "contact_entity": "Opening sensor (binary_sensor or other)",
           "shutter_entity": "Roller shutter (cover) or sensor",
           "open_entity": "Open action",
           "close_entity": "Close action",
           "impulse_entity": "Impulse button",
-          "inverted": "Invert opening sensor"
+          "inverted": "Invert sensor (0/off = open, 1/on = closed)"
         },
         "data_description": {
+          "contact_entity": "Binary_sensor, sensor, etc. Default: on/1 = open, off/0 = closed.",
+          "inverted": "Enable if 0/off = open and 1/on = closed.",
           "shutter_entity": "For a French door: pick the roller shutter cover entity (not a binary sensor)."
         }
       }

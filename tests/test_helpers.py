@@ -39,6 +39,20 @@ def test_is_entity_open_binary():
     assert helpers.is_entity_open(_state("unknown")) is None
 
 
+def test_binary_zero_one_default_and_inverted():
+    """Par défaut 1=ouvert / 0=fermé ; avec inverted : 0=ouvert / 1=fermé."""
+    assert helpers.is_entity_open(_state("1")) is True
+    assert helpers.is_entity_open(_state("0")) is False
+    # Cas utilisateur : 0 = open, 1 = closed
+    assert helpers.is_entity_open(_state("0"), inverted=True) is True
+    assert helpers.is_entity_open(_state("1"), inverted=True) is False
+    assert helpers.is_entity_open(_state("off"), inverted=True) is True
+    assert helpers.is_entity_open(_state("on"), inverted=True) is False
+    # Valeurs numériques brutes
+    assert helpers.is_entity_open(_state(0), inverted=True) is True
+    assert helpers.is_entity_open(_state(1), inverted=True) is False
+
+
 def test_is_entity_open_cover_position():
     assert helpers.is_entity_open(_state("unknown", current_position=80)) is True
     assert helpers.is_entity_open(_state("unknown", current_position=0)) is False
@@ -162,6 +176,7 @@ def test_porte_fenetre_3_battants():
 
 if __name__ == "__main__":
     test_is_entity_open_binary()
+    test_binary_zero_one_default_and_inverted()
     test_is_entity_open_cover_position()
     test_cover_entity_prefers_position()
     test_baie_combined_states()

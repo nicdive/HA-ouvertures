@@ -7,20 +7,24 @@
         "data": {
           "name": "Nom",
           "opening_type": "Type",
-          "inverted": "Inverser le capteur d'ouverture"
+          "inverted": "Inverser le capteur (0/off = ouvert, 1/on = fermé)"
+        },
+        "data_description": {
+          "inverted": "Cochez si votre binary_sensor / contact indique 0 ou off quand c’est ouvert (et 1 ou on quand c’est fermé)."
         }
       },
       "entities": {
         "title": "Entités liées",
         "description": "Configurez les capteurs / commandes pour « {name} » ({type}).",
         "data": {
-          "contact_entity": "Capteur d'ouverture",
+          "contact_entity": "Capteur d'ouverture (binary_sensor ou autre)",
           "shutter_entity": "Volet roulant (cover) ou capteur",
           "open_entity": "Bouton / action Ouvrir",
           "close_entity": "Bouton / action Fermer",
           "impulse_entity": "Bouton impulsionnel"
         },
         "data_description": {
+          "contact_entity": "Binary_sensor, sensor, etc. Par défaut : on/1 = ouvert, off/0 = fermé.",
           "shutter_entity": "Pour une porte-fenêtre : choisissez le cover du volet roulant (pas un capteur)."
         }
       }
@@ -42,9 +46,11 @@
           "open_entity": "Bouton / action Ouvrir",
           "close_entity": "Bouton / action Fermer",
           "impulse_entity": "Bouton impulsionnel",
-          "inverted": "Inverser le capteur d'ouverture"
+          "inverted": "Inverser le capteur (0/off = ouvert, 1/on = fermé)"
         },
         "data_description": {
+          "contact_entity": "Binary_sensor, sensor, etc. Par défaut : on/1 = ouvert, off/0 = fermé.",
+          "inverted": "Cochez si 0/off = ouvert et 1/on = fermé.",
           "shutter_entity": "Pour une porte-fenêtre : choisissez le cover du volet roulant (pas un capteur)."
         }
       }

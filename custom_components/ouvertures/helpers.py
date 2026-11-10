@@ -41,11 +41,38 @@ def _position_open(state: Any) -> bool | None:
         return None
 
 
+def _normalize_state_value(raw: Any) -> str:
+    """Normalise on/off, 0/1, true/false (str ou nombre)."""
+    if raw is None:
+        return ""
+    if isinstance(raw, bool):
+        return "on" if raw else "off"
+    if isinstance(raw, (int, float)):
+        # 1 / 1.0 → "1" ; 0 / 0.0 → "0"
+        return "1" if float(raw) != 0 else "0"
+    value = str(raw).lower().strip()
+    # "1.0", "0.0" venant de certains sensors
+    try:
+        as_float = float(value)
+        if as_float in (0.0, 1.0):
+            return "1" if as_float == 1.0 else "0"
+    except ValueError:
+        pass
+    return value
+
+
 def is_entity_open(state: Any, inverted: bool = False) -> bool | None:
     """Retourne True/False/None selon l'état de l'entité.
 
-    Pour un *cover* (volet roulant), la position ``current_position``
-    est prioritaire (0 = fermé, 100 = ouvert).
+    Convention par défaut (comme Home Assistant) :
+    - ouvert : ``on`` / ``open`` / ``1``
+    - fermé : ``off`` / ``closed`` / ``0``
+
+    Si le capteur est inversé (0 = ouvert, 1 = fermé), passer
+    ``inverted=True`` (case à cocher dans la config).
+
+    Pour un *cover* (volet roulant), ``current_position`` prime
+    (0 = fermé, 100 = ouvert).
     """
     if state is None or state.state is None:
         return None
@@ -56,7 +83,7 @@ def is_entity_open(state: Any, inverted: bool = False) -> bool | None:
         if pos is not None:
             return (not pos) if inverted else pos
 
-    value = str(state.state).lower().strip()
+    value = _normalize_state_value(state.state)
     if value in OPEN_STATES:
         result = True
     elif value in CLOSED_STATES:
