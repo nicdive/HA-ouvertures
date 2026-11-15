@@ -1,3 +1,10 @@
+## [1.6.2] - 2026-11-15
+
+### Corrigé
+
+- Nom d'appareil préfixé **Ouverture — …** pour éviter que HA fusionne
+  l'entrée avec un switch / binary_sensor source du même nom (ex. portail)
+
 ## [1.6.1] - 2026-11-15
 
 ### Corrigé
