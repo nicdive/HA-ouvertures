@@ -57,16 +57,28 @@ Chaque ouverture crée :
 - un **binary_sensor Ouvert**
 - des **boutons** de commande (portail / garage)
 
+### Alerte « ouverture restée ouverte »
+
+Fonction **activable** (switch) qui allume la lumière d’une **gateway Xiaomi**
+si une baie / fenêtre est encore ouverte quand vous ouvrez une porte
+déclencheur (ex. porte d’entrée).
+
+- Surveille uniquement le **contact** (les **volets sont ignorés**)
+- La couleur s’éteint quand vous **refermez la porte** ou l’**ouverture** restée ouverte
+- Config : *Ajouter une intégration → Gestion des ouvertures → Alerte ouverture restée ouverte*
+
 ## Configuration
 
 1. **Paramètres → Appareils et services → Ajouter une intégration → Gestion des ouvertures**
-2. Choisir le **type** et le **nom**
-3. Sélectionner les entités demandées :
+2. Choisir **Nouvelle ouverture** ou **Alerte ouverture restée ouverte**
+3. Pour une ouverture : choisir le **type** et le **nom**, puis les entités :
    - Baie / fenêtre + volets : capteur ouverture + capteur/cover volet
    - Porte-fenêtre 3 battants : capteur ouverture + **entité cover** du volet roulant
    - Fenêtre sans volets / porte / piscine : capteur d’ouverture
    - Portail : capteur + action ouvrir + fermer + impulsion
    - Garage : capteur + bouton impulsionnel
+4. Pour l’alerte : sélectionner les baies/fenêtres, la porte déclencheur,
+   la lumière gateway et la couleur
 
 Les **binary_sensor** et les **sensor** numériques (`0` / `1` ou `0.0` / `1.0`, typiques xPL / remote HA) sont supportés.
 

@@ -15,6 +15,7 @@ from .const import (
     CONF_OPEN_ENTITY,
     CONF_OPENING_TYPE,
     OPENING_TYPES,
+    TYPE_ALERTE_RESTEE,
 )
 from .entity import OuvertureEntity
 
@@ -27,6 +28,8 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     data = {**entry.data, **entry.options}
+    if data.get(CONF_OPENING_TYPE) == TYPE_ALERTE_RESTEE:
+        return
     meta = OPENING_TYPES[data[CONF_OPENING_TYPE]]
     entities: list[ButtonEntity] = []
 

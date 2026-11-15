@@ -55,12 +55,15 @@ class OuvertureEntity(Entity):
         except Exception:  # noqa: BLE001
             suggested = None
 
+        # Préfixe volontaire : évite que HA regroupe / fusionne cet appareil
+        # avec un switch / binary_sensor source qui porte le même nom (ex. Portail).
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
-            name=name,
+            name=f"Ouverture — {name}",
             manufacturer="Ouvertures",
             model=meta["label"],
             suggested_area=suggested,
+            configuration_url=None,
         )
         self._attr_icon = meta["icon"]
         self._resolved = resolve_opening(

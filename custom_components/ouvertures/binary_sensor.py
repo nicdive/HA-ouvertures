@@ -1,4 +1,4 @@
-"""Capteur binaire ouvert / fermé."""
+"""Capteur binaire ouvert / fermé + alerte restée ouverte."""
 
 from __future__ import annotations
 
@@ -7,12 +7,18 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import Event, HomeAssistant, callback
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from .alert import DATA_ALERT_MANAGER, LeftOpenAlertManager
 from .const import (
+    ALERT_DEFAULT_NAME,
+    CONF_NAME,
     CONF_OPENING_TYPE,
+    DOMAIN,
     OPENING_TYPES,
+    TYPE_ALERTE_RESTEE,
     TYPE_BAIE,
     TYPE_FENETRE_DOUBLE,
     TYPE_FENETRE_DOUBLE_VOLETS,
@@ -39,6 +45,9 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
+    if entry.data.get(CONF_OPENING_TYPE) == TYPE_ALERTE_RESTEE:
+        async_add_entities([AlertActiveBinarySensor(hass, entry)])
+        return
     async_add_entities([OuvertureOpenBinarySensor(hass, entry)])
 
 
@@ -79,3 +88,51 @@ class OuvertureOpenBinarySensor(OuvertureEntity, BinarySensorEntity):
                 return "mdi:window-open-variant"
             return "mdi:door-open"
         return base
+
+
+class AlertActiveBinarySensor(BinarySensorEntity):
+    """True quand la gateway affiche l'alerte (porte ouverte + baie/fenêtre ouverte)."""
+
+    _attr_has_entity_name = True
+    _attr_name = "Alerte active"
+    _attr_translation_key = "alerte_active"
+    _attr_device_class = BinarySensorDeviceClass.PROBLEM
+    _attr_icon = "mdi:bell-alert"
+    _attr_should_poll = False
+
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+        self.hass = hass
+        self._entry = entry
+        self._attr_unique_id = f"{entry.entry_id}_active"
+        name = entry.data.get(CONF_NAME) or ALERT_DEFAULT_NAME
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, entry.entry_id)},
+            name=name,
+            manufacturer="Ouvertures",
+            model="Alerte restée ouverte",
+        )
+
+    def _manager(self) -> LeftOpenAlertManager | None:
+        store = self.hass.data.get(DOMAIN, {}).get(self._entry.entry_id, {})
+        return store.get(DATA_ALERT_MANAGER)
+
+    @property
+    def is_on(self) -> bool:
+        mgr = self._manager()
+        return bool(mgr and mgr.is_active)
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        mgr = self._manager()
+        return {
+            "ouvertures_restees_ouvertes": mgr.open_monitored_names() if mgr else [],
+        }
+
+    async def async_added_to_hass(self) -> None:
+        @callback
+        def _on_update(_event: Event) -> None:
+            self.async_write_ha_state()
+
+        self.async_on_remove(
+            self.hass.bus.async_listen(f"{DOMAIN}_alert_update", _on_update)
+        )

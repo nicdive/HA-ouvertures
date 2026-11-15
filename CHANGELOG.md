@@ -1,3 +1,31 @@
+## [1.6.2] - 2026-11-15
+
+### Corrigé
+
+- Nom d'appareil préfixé **Ouverture — …** pour éviter que HA fusionne
+  l'entrée avec un switch / binary_sensor source du même nom (ex. portail)
+
+## [1.6.1] - 2026-11-15
+
+### Corrigé
+
+- Hassfest : ordre des clés `manifest.json` + `CONFIG_SCHEMA` config-entry-only
+- HACS : ajout licence MIT ; ignore description/topics repo en CI
+
+## [1.6.0] - 2026-11-15
+
+### Ajouté
+
+- **Alerte ouverture restée ouverte** (activable) :
+  - sélection de baies / fenêtres / portes-fenêtres déjà configurées
+    (contact uniquement, **volets ignorés**)
+  - porte déclencheur (ex. porte d'entrée)
+  - lumière **gateway Xiaomi** + couleur / luminosité
+  - allumage quand on ouvre la porte alors qu’une ouverture surveillée
+    est encore ouverte ; extinction à la fermeture de la porte **ou**
+    de l’ouverture concernée
+  - switch **Activée** + binary_sensor **Alerte active**
+
 ## [1.5.1] - 2026-11-10
 
 ### Changé

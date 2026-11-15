@@ -12,6 +12,17 @@ CONF_CLOSE_ENTITY = "close_entity"
 CONF_IMPULSE_ENTITY = "impulse_entity"
 CONF_INVERTED = "inverted"
 
+# Alerte « ouverture restée ouverte » (gateway Xiaomi)
+CONF_SETUP_KIND = "setup_kind"
+SETUP_KIND_OPENING = "opening"
+SETUP_KIND_ALERT = "alert"
+CONF_ALERT_ENABLED = "alert_enabled"
+CONF_ALERT_MONITORED = "alert_monitored"
+CONF_ALERT_TRIGGER = "alert_trigger"
+CONF_ALERT_GATEWAY = "alert_gateway"
+CONF_ALERT_COLOR = "alert_color"
+CONF_ALERT_BRIGHTNESS = "alert_brightness"
+
 TYPE_BAIE = "baie_vitree"
 TYPE_FENETRE_SIMPLE = "fenetre_simple"
 TYPE_FENETRE_SIMPLE_VOLETS = "fenetre_simple_volets"
@@ -23,6 +34,32 @@ TYPE_PORTE_ENTREE = "porte_entree"
 TYPE_PORTAIL = "portail_coulissant"
 TYPE_GARAGE = "garage_sectionnelle"
 TYPE_PISCINE = "piscine_volet"
+TYPE_ALERTE_RESTEE = "alerte_restee_ouverte"
+
+# Baies / fenêtres / PF : on surveille le contact uniquement (pas les volets)
+TYPES_ALERT_MONITORABLE = frozenset(
+    {
+        TYPE_BAIE,
+        TYPE_FENETRE_SIMPLE,
+        TYPE_FENETRE_SIMPLE_VOLETS,
+        TYPE_FENETRE_DOUBLE,
+        TYPE_FENETRE_DOUBLE_VOLETS,
+        TYPE_PORTE_FENETRE_3,
+    }
+)
+
+# Portes pouvant servir de déclencheur (ex. porte d'entrée)
+TYPES_ALERT_TRIGGER = frozenset(
+    {
+        TYPE_PORTE,
+        TYPE_PORTE_ENTREE,
+    }
+)
+
+ALERT_UNIQUE_ID = f"{DOMAIN}_alerte_restee_ouverte"
+ALERT_DEFAULT_NAME = "Alerte ouverture restée ouverte"
+ALERT_DEFAULT_COLOR = [255, 40, 0]
+ALERT_DEFAULT_BRIGHTNESS = 180
 
 OPENING_TYPES = {
     TYPE_BAIE: {
@@ -166,7 +203,7 @@ CLOSED_STATES = frozenset(
 STATIC_URL_PATH = f"/{DOMAIN}_static"
 CARD_FILENAME = "ouvertures-card.js"
 # Incrémenter pour forcer le rechargement des SVG / JS côté navigateur
-ASSETS_VERSION = "1.5.1"
+ASSETS_VERSION = "1.6.2"
 
 ATTR_OPENING_TYPE = "opening_type"
 ATTR_CONTACT_ENTITY = "contact_entity"
