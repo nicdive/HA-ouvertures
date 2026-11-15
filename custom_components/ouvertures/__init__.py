@@ -10,6 +10,7 @@ import asyncio
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EVENT_HOMEASSISTANT_STARTED, Platform
 from homeassistant.core import Event, HomeAssistant
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.typing import ConfigType
 
 from .alert import DATA_ALERT_MANAGER, LeftOpenAlertManager
@@ -22,6 +23,9 @@ from .const import (
     TYPE_ALERTE_RESTEE,
 )
 from .dashboard import async_setup_dashboard_hooks, schedule_dashboard_update
+
+# Intégration uniquement via config entries (pas de YAML)
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,3 +1,10 @@
+## [1.6.1] - 2026-11-15
+
+### Corrigé
+
+- Hassfest : ordre des clés `manifest.json` + `CONFIG_SCHEMA` config-entry-only
+- HACS : ajout licence MIT ; ignore description/topics repo en CI
+
 ## [1.6.0] - 2026-11-15
 
 ### Ajouté

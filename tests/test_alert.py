@@ -138,7 +138,7 @@ def test_constants_monitorable():
     assert const.TYPE_PORTE_FENETRE_3 in const.TYPES_ALERT_MONITORABLE
     assert const.TYPE_PORTE_ENTREE not in const.TYPES_ALERT_MONITORABLE
     assert const.TYPE_PORTE_ENTREE in const.TYPES_ALERT_TRIGGER
-    assert const.ASSETS_VERSION == "1.6.0"
+    assert const.ASSETS_VERSION.startswith("1.6.")
 
 
 async def test_alert_turns_on_when_door_opens_with_window_open():

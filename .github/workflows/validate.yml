@@ -16,6 +16,8 @@ jobs:
         uses: hacs/action@main
         with:
           category: integration
+          # description/topics : réglages GitHub (API lecture seule ici)
+          ignore: description,topics
 
   hassfest:
     name: Hassfest
@@ -32,5 +34,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Run helper tests
-        run: python3 tests/test_helpers.py
+      - name: Run unit tests
+        run: |
+          python3 tests/test_helpers.py
+          python3 tests/test_alert.py
