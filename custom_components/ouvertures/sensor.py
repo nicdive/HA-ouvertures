@@ -25,6 +25,7 @@ from .const import (
     CONF_OPENING_TYPE,
     DOMAIN,
     OPENING_TYPES,
+    TYPE_ALERTE_RESTEE,
 )
 from .entity import OuvertureEntity
 
@@ -34,6 +35,8 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
+    if entry.data.get(CONF_OPENING_TYPE) == TYPE_ALERTE_RESTEE:
+        return
     async_add_entities([OuvertureStateSensor(hass, entry)])
 
 

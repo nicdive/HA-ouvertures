@@ -12,7 +12,15 @@ from homeassistant.const import EVENT_HOMEASSISTANT_STARTED, Platform
 from homeassistant.core import Event, HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 
-from .const import ASSETS_VERSION, CARD_FILENAME, DOMAIN, STATIC_URL_PATH
+from .alert import DATA_ALERT_MANAGER, LeftOpenAlertManager
+from .const import (
+    ASSETS_VERSION,
+    CARD_FILENAME,
+    CONF_OPENING_TYPE,
+    DOMAIN,
+    STATIC_URL_PATH,
+    TYPE_ALERTE_RESTEE,
+)
 from .dashboard import async_setup_dashboard_hooks, schedule_dashboard_update
 
 _LOGGER = logging.getLogger(__name__)
@@ -21,6 +29,12 @@ PLATFORMS: list[Platform] = [
     Platform.SENSOR,
     Platform.BINARY_SENSOR,
     Platform.BUTTON,
+    Platform.SWITCH,
+]
+
+ALERT_PLATFORMS: list[Platform] = [
+    Platform.BINARY_SENSOR,
+    Platform.SWITCH,
 ]
 
 WWW_PATH = Path(__file__).parent / "www"
@@ -146,33 +160,52 @@ async def _async_register_lovelace_resource(hass: HomeAssistant, url: str) -> No
         _LOGGER.warning("Impossible d'ajouter la ressource Lovelace : %s", err)
 
 
+def _is_alert_entry(entry: ConfigEntry) -> bool:
+    return entry.data.get(CONF_OPENING_TYPE) == TYPE_ALERTE_RESTEE
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Configure une ouverture."""
+    """Configure une ouverture ou l'alerte restée ouverte."""
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = {
         "data": {**entry.data, **entry.options},
     }
 
     entry.async_on_unload(entry.add_update_listener(_async_update_listener))
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    await async_setup_dashboard_hooks(hass)
-    schedule_dashboard_update(hass)
+
+    if _is_alert_entry(entry):
+        manager = LeftOpenAlertManager(hass, entry)
+        hass.data[DOMAIN][entry.entry_id][DATA_ALERT_MANAGER] = manager
+        await hass.config_entries.async_forward_entry_setups(entry, ALERT_PLATFORMS)
+        await manager.async_start()
+    else:
+        await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+        await async_setup_dashboard_hooks(hass)
+        schedule_dashboard_update(hass)
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Décharge une ouverture."""
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    """Décharge une ouverture / alerte."""
+    platforms = ALERT_PLATFORMS if _is_alert_entry(entry) else PLATFORMS
+    store = hass.data.get(DOMAIN, {}).get(entry.entry_id, {})
+    manager = store.get(DATA_ALERT_MANAGER)
+    if manager is not None:
+        await manager.async_stop()
+
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, platforms)
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id, None)
-        schedule_dashboard_update(hass)
+        if not _is_alert_entry(entry):
+            schedule_dashboard_update(hass)
     return unload_ok
 
 
 async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Appelé après suppression définitive d'une entrée."""
     hass.data.get(DOMAIN, {}).pop(entry.entry_id, None)
-    schedule_dashboard_update(hass)
+    if not _is_alert_entry(entry):
+        schedule_dashboard_update(hass)
 
 
 async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
@@ -181,4 +214,5 @@ async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> Non
         "data": {**entry.data, **entry.options},
     }
     await hass.config_entries.async_reload(entry.entry_id)
-    schedule_dashboard_update(hass)
+    if not _is_alert_entry(entry):
+        schedule_dashboard_update(hass)

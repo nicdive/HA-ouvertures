@@ -2,6 +2,13 @@
   "config": {
     "step": {
       "user": {
+        "title": "Openings manager",
+        "description": "Add an opening or configure the left-open alert.",
+        "data": {
+          "setup_kind": "What do you want to add?"
+        }
+      },
+      "opening": {
         "title": "New opening",
         "description": "Choose the opening type and its name.",
         "data": {
@@ -27,26 +34,49 @@
           "contact_entity": "Binary_sensor, sensor, etc. Default: on/1 = open, off/0 = closed.",
           "shutter_entity": "For a French door: pick the roller shutter cover entity (not a binary sensor)."
         }
+      },
+      "alert": {
+        "title": "Left-open alert",
+        "description": "If a bay/window contact is still open when you open the trigger door, the Xiaomi gateway light turns on. It turns off when you close the door again or close the left-open opening. Shutters are ignored.",
+        "data": {
+          "alert_enabled": "Enable alert",
+          "alert_monitored": "Bays / windows to monitor",
+          "alert_trigger": "Trigger door (e.g. front door)",
+          "alert_gateway": "Xiaomi gateway light",
+          "alert_color": "Alert color",
+          "alert_brightness": "Brightness"
+        }
       }
     },
     "error": {
-      "invalid_name": "Name is required."
+      "invalid_name": "Name is required.",
+      "no_monitored": "Create at least one bay or window first.",
+      "no_trigger": "Create a door first (entrance or simple garage door).",
+      "required_monitored": "Select at least one bay / window.",
+      "required_trigger": "Select the trigger door.",
+      "required_gateway": "Select the gateway light."
     },
     "abort": {
-      "already_configured": "This opening is already configured."
+      "already_configured": "This opening / alert is already configured."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Edit entities",
+        "title": "Edit configuration",
         "data": {
           "contact_entity": "Opening sensor (binary_sensor or other)",
           "shutter_entity": "Roller shutter (cover) or sensor",
           "open_entity": "Open action",
           "close_entity": "Close action",
           "impulse_entity": "Impulse button",
-          "inverted": "Invert sensor (0/off = open, 1/on = closed)"
+          "inverted": "Invert sensor (0/off = open, 1/on = closed)",
+          "alert_enabled": "Enable alert",
+          "alert_monitored": "Bays / windows to monitor",
+          "alert_trigger": "Trigger door",
+          "alert_gateway": "Xiaomi gateway light",
+          "alert_color": "Alert color",
+          "alert_brightness": "Brightness"
         },
         "data_description": {
           "contact_entity": "Binary_sensor, sensor, etc. Default: on/1 = open, off/0 = closed.",
@@ -54,6 +84,11 @@
           "shutter_entity": "For a French door: pick the roller shutter cover entity (not a binary sensor)."
         }
       }
+    },
+    "error": {
+      "required_monitored": "Select at least one bay / window.",
+      "required_trigger": "Select the trigger door.",
+      "required_gateway": "Select the gateway light."
     }
   },
   "entity": {
@@ -65,6 +100,14 @@
     "binary_sensor": {
       "ouvert": {
         "name": "Open"
+      },
+      "alerte_active": {
+        "name": "Alert active"
+      }
+    },
+    "switch": {
+      "alerte_activee": {
+        "name": "Enabled"
       }
     }
   }

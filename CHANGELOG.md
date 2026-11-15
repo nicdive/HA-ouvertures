@@ -1,3 +1,17 @@
+## [1.6.0] - 2026-11-15
+
+### Ajouté
+
+- **Alerte ouverture restée ouverte** (activable) :
+  - sélection de baies / fenêtres / portes-fenêtres déjà configurées
+    (contact uniquement, **volets ignorés**)
+  - porte déclencheur (ex. porte d'entrée)
+  - lumière **gateway Xiaomi** + couleur / luminosité
+  - allumage quand on ouvre la porte alors qu’une ouverture surveillée
+    est encore ouverte ; extinction à la fermeture de la porte **ou**
+    de l’ouverture concernée
+  - switch **Activée** + binary_sensor **Alerte active**
+
 ## [1.5.1] - 2026-11-10
 
 ### Changé

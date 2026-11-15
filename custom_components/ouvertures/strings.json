@@ -2,6 +2,13 @@
   "config": {
     "step": {
       "user": {
+        "title": "Gestion des ouvertures",
+        "description": "Créer une ouverture ou configurer l'alerte « restée ouverte ».",
+        "data": {
+          "setup_kind": "Que souhaitez-vous ajouter ?"
+        }
+      },
+      "opening": {
         "title": "Nouvelle ouverture",
         "description": "Choisissez le type d'ouverture et son nom.",
         "data": {
@@ -27,26 +34,49 @@
           "contact_entity": "Binary_sensor, sensor, etc. Par défaut : on/1 = ouvert, off/0 = fermé.",
           "shutter_entity": "Pour une porte-fenêtre : choisissez le cover du volet roulant (pas un capteur)."
         }
+      },
+      "alert": {
+        "title": "Alerte ouverture restée ouverte",
+        "description": "Si une baie / fenêtre (contact uniquement, volets ignorés) est encore ouverte quand vous ouvrez la porte déclencheur, la lumière de la gateway Xiaomi s'allume. Elle s'éteint quand vous refermez la porte ou l'ouverture concernée.",
+        "data": {
+          "alert_enabled": "Activer l'alerte",
+          "alert_monitored": "Baies / fenêtres à surveiller",
+          "alert_trigger": "Porte déclencheur (ex. porte d'entrée)",
+          "alert_gateway": "Lumière gateway Xiaomi",
+          "alert_color": "Couleur d'alerte",
+          "alert_brightness": "Luminosité"
+        }
       }
     },
     "error": {
-      "invalid_name": "Le nom est obligatoire."
+      "invalid_name": "Le nom est obligatoire.",
+      "no_monitored": "Créez d'abord au moins une baie ou fenêtre dans Gestion des ouvertures.",
+      "no_trigger": "Créez d'abord une porte (porte d'entrée ou porte garage simple).",
+      "required_monitored": "Sélectionnez au moins une baie / fenêtre.",
+      "required_trigger": "Sélectionnez la porte déclencheur.",
+      "required_gateway": "Sélectionnez la lumière de la gateway."
     },
     "abort": {
-      "already_configured": "Cette ouverture est déjà configurée."
+      "already_configured": "Cette ouverture / alerte est déjà configurée."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Modifier les entités",
+        "title": "Modifier la configuration",
         "data": {
           "contact_entity": "Capteur d'ouverture",
           "shutter_entity": "Volet roulant (cover) ou capteur",
           "open_entity": "Bouton / action Ouvrir",
           "close_entity": "Bouton / action Fermer",
           "impulse_entity": "Bouton impulsionnel",
-          "inverted": "Inverser le capteur (0/off = ouvert, 1/on = fermé)"
+          "inverted": "Inverser le capteur (0/off = ouvert, 1/on = fermé)",
+          "alert_enabled": "Activer l'alerte",
+          "alert_monitored": "Baies / fenêtres à surveiller",
+          "alert_trigger": "Porte déclencheur",
+          "alert_gateway": "Lumière gateway Xiaomi",
+          "alert_color": "Couleur d'alerte",
+          "alert_brightness": "Luminosité"
         },
         "data_description": {
           "contact_entity": "Binary_sensor, sensor, etc. Par défaut : on/1 = ouvert, off/0 = fermé.",
@@ -54,6 +84,11 @@
           "shutter_entity": "Pour une porte-fenêtre : choisissez le cover du volet roulant (pas un capteur)."
         }
       }
+    },
+    "error": {
+      "required_monitored": "Sélectionnez au moins une baie / fenêtre.",
+      "required_trigger": "Sélectionnez la porte déclencheur.",
+      "required_gateway": "Sélectionnez la lumière de la gateway."
     }
   },
   "entity": {
@@ -65,6 +100,14 @@
     "binary_sensor": {
       "ouvert": {
         "name": "Ouvert"
+      },
+      "alerte_active": {
+        "name": "Alerte active"
+      }
+    },
+    "switch": {
+      "alerte_activee": {
+        "name": "Activée"
       }
     }
   }
