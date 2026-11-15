@@ -6,6 +6,7 @@
   "config_flow": true,
   "dependencies": ["http", "frontend", "lovelace", "websocket_api"],
   "documentation": "https://github.com/nicdive/HA-ouvertures",
+  "integration_type": "hub",
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/nicdive/HA-ouvertures/issues",
   "requirements": [],

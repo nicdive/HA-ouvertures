@@ -16,8 +16,8 @@ jobs:
         uses: hacs/action@main
         with:
           category: integration
-          # description/topics : réglages GitHub (API lecture seule ici)
-          ignore: description,topics
+          # Repo metadata (description/topics/licence GitHub) non modifiable via ce token
+          ignore: description topics license
 
   hassfest:
     name: Hassfest
